@@ -1,0 +1,38 @@
+{
+  "name": "mimmi20/template",
+  "description": "Provides a GitHub repository template for a PHP library, using GitHub actions.",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Thomas Müller",
+      "homepage": "https://github.com/mimmi20",
+      "role": "Developer"
+    }
+  ],
+  "homepage": "https://github.com/mimmi20/template",
+  "support": {
+    "issues": "https://github.com/mimmi20/template/issues",
+    "source": "https://github.com/mimmi20/template"
+  },
+  "require": {
+    "php": "^7.4.3 || ^8.0.0",
+    "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "mimmi20/coding-standard": "^2.6.2",
+    "phpstan/extension-installer": "^1.1.0",
+    "phpstan/phpstan": "^1.4.2",
+    "phpstan/phpstan-deprecation-rules": "^1.0.0",
+    "phpstan/phpstan-phpunit": "^1.0.0",
+    "phpunit/phpunit": "^9.5.12"
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
+  }
+}
