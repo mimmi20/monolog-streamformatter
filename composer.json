@@ -1,6 +1,6 @@
 {
-  "name": "mimmi20/template",
-  "description": "Provides a GitHub repository template for a PHP library, using GitHub actions.",
+  "name": "mimmi20/monolog-streamformatter",
+  "description": "Provides a Stream Formatter for Monolog",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -10,22 +10,56 @@
       "role": "Developer"
     }
   ],
-  "homepage": "https://github.com/mimmi20/template",
+  "homepage": "https://github.com/mimmi20/monolog-streamformatter",
   "support": {
-    "issues": "https://github.com/mimmi20/template/issues",
-    "source": "https://github.com/mimmi20/template"
+    "issues": "https://github.com/mimmi20/monolog-streamformatter/issues",
+    "source": "https://github.com/mimmi20/monolog-streamformatter"
   },
   "require": {
     "php": "^7.4.3 || ^8.0.0",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "monolog/monolog": "^2.6.0",
+    "symfony/console": "^v5.4.8 || ^v6.0.8"
   },
   "require-dev": {
-    "mimmi20/coding-standard": "^2.6.2",
+    "ext-json": "*",
+    "mimmi20/coding-standard": "^2.8.0",
     "phpstan/extension-installer": "^1.1.0",
-    "phpstan/phpstan": "^1.4.2",
+    "phpstan/phpstan": "^1.6.8",
     "phpstan/phpstan-deprecation-rules": "^1.0.0",
-    "phpstan/phpstan-phpunit": "^1.0.0",
-    "phpunit/phpunit": "^9.5.12"
+    "phpstan/phpstan-phpunit": "^1.1.1",
+    "phpunit/phpunit": "^9.5.20"
+  },
+  "suggest": {
+    "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+    "ext-json": "Allow sending log messages to the ChromePHP Handler",
+    "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+    "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+    "actived/microsoft-teams-notifier": "Allow sending log messages to Microsoft Teams",
+    "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+    "bartlett/monolog-callbackfilterhandler": "Allow filtering log messages based on a callback function",
+    "cmdisp/monolog-microsoft-teams": "Allow sending log messages to Microsoft Teams",
+    "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+    "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+    "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+    "jk/monolog-request-header-processor": "Allow to add request headers to the log message",
+    "laminas/laminas-servicemanager": "Required for the Factories",
+    "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+    "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+    "php-console/php-console": "Allow sending log messages to Google Chrome",
+    "rollbar/rollbar": "Allow sending log messages to Rollbar (only 2.1+ supported, but not 3.x)",
+    "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+    "swiftmailer/swiftmailer": "Allow sending log messages to Email clients"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mimmi20\\Monolog\\Formatter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mimmi20Test\\Monolog\\Formatter\\": "tests/"
+    }
   },
   "config": {
     "preferred-install": "dist",
