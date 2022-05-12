@@ -1,14 +1,14 @@
-# template
+# monolog-streamformatter
 
-[![Latest Stable Version](https://poser.pugx.org/mimmi20/template/v/stable?format=flat-square)](https://packagist.org/packages/mimmi20/template)
-[![Latest Unstable Version](https://poser.pugx.org/mimmi20/template/v/unstable?format=flat-square)](https://packagist.org/packages/mimmi20/template)
-[![License](https://poser.pugx.org/mimmi20/template/license?format=flat-square)](https://packagist.org/packages/mimmi20/template)
+[![Latest Stable Version](https://poser.pugx.org/mimmi20/monolog-streamformatter/v/stable?format=flat-square)](https://packagist.org/packages/mimmi20/monolog-streamformatter)
+[![Latest Unstable Version](https://poser.pugx.org/mimmi20/monolog-streamformatter/v/unstable?format=flat-square)](https://packagist.org/packages/mimmi20/monolog-streamformatter)
+[![License](https://poser.pugx.org/mimmi20/monolog-streamformatter/license?format=flat-square)](https://packagist.org/packages/mimmi20/monolog-streamformatter)
 
 ## Code Status
 
-[![codecov](https://codecov.io/gh/mimmi20/template/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/template)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mimmi20/template.svg)](http://isitmaintained.com/project/mimmi20/template "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/mimmi20/template.svg)](http://isitmaintained.com/project/mimmi20/template "Percentage of issues still open")
+[![codecov](https://codecov.io/gh/mimmi20/monolog-streamformatter/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/monolog-streamformatter)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mimmi20/monolog-streamformatter.svg)](http://isitmaintained.com/project/mimmi20/monolog-streamformatter "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/mimmi20/monolog-streamformatter.svg)](http://isitmaintained.com/project/mimmi20/monolog-streamformatter "Percentage of issues still open")
 
 ## Installation
 
@@ -17,7 +17,7 @@
 Run
 
 ```
-$ composer require mimmi20/template
+$ composer require mimmi20/monolog-streamformatter
 ```
 
 ## Usage
