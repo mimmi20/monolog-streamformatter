@@ -30,6 +30,16 @@
     "phpstan/phpstan-phpunit": "^1.1.1",
     "phpunit/phpunit": "^9.5.20"
   },
+  "autoload": {
+    "psr-4": {
+      "Mimmi20\\Monolog\\Formatter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mimmi20Test\\Monolog\\Formatter\\": "tests/"
+    }
+  },
   "config": {
     "preferred-install": "dist",
     "sort-packages": true,
