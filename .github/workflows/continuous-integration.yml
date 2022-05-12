@@ -9,7 +9,7 @@ name: "Continuous Integration"
 env:
   PHP_EXTENSIONS: "json, opcache, mbstring"
   PHP_INI_VALUES: "opcache.enable=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On, intl.default_locale=de, intl.use_exceptions=1, zend.exception_ignore_args=0"
-  COMPOSER_OPTIONS: "--optimize-autoloader --prefer-dist --prefer-stable -v"
+  COMPOSER_OPTIONS: "--ansi --optimize-autoloader --prefer-dist --prefer-stable -v"
   TOOLS: "composer:v2"
 
 jobs:
