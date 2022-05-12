@@ -1,20 +1,46 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * This file is part of the mimmi20/monolog-streamformatter package.
+ *
+ * Copyright (c) 2022, Thomas Mueller <mimmi20@live.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types = 1);
 
 namespace Mimmi20\Monolog\Formatter;
 
 use Monolog\Formatter\NormalizerFormatter;
-use Monolog\Utils;
+use Monolog\Logger;
+use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Throwable;
+
+use function array_keys;
+use function count;
+use function is_array;
+use function is_bool;
+use function is_scalar;
+use function is_string;
+use function mb_strpos;
+use function str_repeat;
+use function str_replace;
+use function trim;
+use function ucfirst;
+use function var_export;
 
 /**
- * @phpstan-import-type Record from \Monolog\Logger
+ * @phpstan-import-type Record from Logger
  */
-class StreamFormatter extends NormalizerFormatter
+final class StreamFormatter extends NormalizerFormatter
 {
-    private const SIMPLE_FORMAT = "%message%";
+    public const SIMPLE_FORMAT = '%message%';
+    public const BOX_STYLE     = 'box';
 
     private string $format;
     private string $tableStyle;
@@ -22,15 +48,15 @@ class StreamFormatter extends NormalizerFormatter
     private bool $includeStacktraces;
 
     /**
-     * @param string|null $format                     The format of the message
-     * @param string|null $dateFormat                 The format of the timestamp: one supported by DateTime::format
-     * @param bool        $allowInlineLineBreaks      Whether to allow inline line breaks in log entries
+     * @param string|null $format                The format of the message
+     * @param string|null $dateFormat            The format of the timestamp: one supported by DateTime::format
+     * @param bool        $allowInlineLineBreaks Whether to allow inline line breaks in log entries
      */
-    public function __construct(?string $format = null, string $tableStyle = 'box', ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
+    public function __construct(?string $format = null, string $tableStyle = self::BOX_STYLE, ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
     {
-        $this->format = $format === null ? self::SIMPLE_FORMAT : $format;
+        $this->format     = $format ?? self::SIMPLE_FORMAT;
         $this->tableStyle = $tableStyle;
-        $this->allowInlineLineBreaks = $allowInlineLineBreaks;
+        $this->allowInlineLineBreaks($allowInlineLineBreaks);
         $this->includeStacktraces($includeStacktraces);
 
         parent::__construct($dateFormat);
@@ -41,8 +67,15 @@ class StreamFormatter extends NormalizerFormatter
         $this->includeStacktraces = $include;
 
         if ($this->includeStacktraces) {
-            $this->allowInlineLineBreaks = true;
+            $this->allowInlineLineBreaks();
         }
+
+        return $this;
+    }
+
+    public function allowInlineLineBreaks(bool $allow = true): self
+    {
+        $this->allowInlineLineBreaks = $allow;
 
         return $this;
     }
@@ -51,28 +84,36 @@ class StreamFormatter extends NormalizerFormatter
      * Formats a log record.
      *
      * @param  array $record A record to format
-     * @return mixed The formatted record
-     *
      * @phpstan-param Record $record
+     *
+     * @return string The formatted record
+     *
+     * @throws RuntimeException if encoding fails and errors are not ignored
      */
     public function format(array $record): string
     {
+        /** @var scalar|array<(array|scalar|null)>|null $vars */
+        /** @phpstan-var Record $vars */
         $vars = parent::format($record);
 
         $message = $this->format;
 
         foreach ($vars['extra'] as $var => $val) {
-            if (false !== strpos($message, '%extra.'.$var.'%')) {
-                $message = str_replace('%extra.'.$var.'%', $this->stringify($val), $message);
-                unset($vars['extra'][$var]);
+            if (false === mb_strpos($message, '%extra.' . $var . '%')) {
+                continue;
             }
+
+            $message = str_replace('%extra.' . $var . '%', $this->stringify($val), $message);
+            unset($vars['extra'][$var]);
         }
 
         foreach ($vars['context'] as $var => $val) {
-            if (false !== strpos($message, '%context.'.$var.'%')) {
-                $message = str_replace('%context.'.$var.'%', $this->stringify($val), $message);
-                unset($vars['context'][$var]);
+            if (false === mb_strpos($message, '%context.' . $var . '%')) {
+                continue;
             }
+
+            $message = str_replace('%context.' . $var . '%', $this->stringify($val), $message);
+            unset($vars['context'][$var]);
         }
 
         if (empty($vars['context'])) {
@@ -86,9 +127,11 @@ class StreamFormatter extends NormalizerFormatter
         }
 
         foreach ($vars as $var => $val) {
-            if (false !== strpos($message, '%'.$var.'%')) {
-                $message = str_replace('%'.$var.'%', $this->stringify($val), $message);
+            if (false === mb_strpos($message, '%' . $var . '%')) {
+                continue;
             }
+
+            $message = str_replace('%' . $var . '%', $this->stringify($val), $message);
         }
 
         $output = new BufferedOutput();
@@ -108,7 +151,7 @@ class StreamFormatter extends NormalizerFormatter
 
         $output->writeln('');
 
-        foreach (array('extra', 'context') as $element) {
+        foreach (['extra', 'context'] as $element) {
             if (empty($record[$element])) {
                 continue;
             }
@@ -117,12 +160,12 @@ class StreamFormatter extends NormalizerFormatter
             $table->addRow([new TableCell(ucfirst($element), ['colspan' => 3])]);
             $table->addRow(new TableSeparator());
 
-            foreach($record[$element] as $key => $value){
-                if ($value instanceof \Throwable) {
+            foreach ($record[$element] as $key => $value) {
+                if ($value instanceof Throwable) {
                     $exception = $value;
 
                     $value = [
-                        'Type' => get_class($exception),
+                        'Type' => $exception::class,
                         'Message' => $exception->getMessage(),
                         'Code' => $exception->getCode(),
                         'File' => $exception->getFile(),
@@ -134,10 +177,10 @@ class StreamFormatter extends NormalizerFormatter
 
                     $prev = $exception->getPrevious();
 
-                    if ($prev instanceof \Throwable) {
+                    if ($prev instanceof Throwable) {
                         do {
                             $value = [
-                                'Type' => get_class($prev),
+                                'Type' => $prev::class,
                                 'Message' => $prev->getMessage(),
                                 'Code' => $prev->getCode(),
                                 'File' => $prev->getFile(),
@@ -148,7 +191,7 @@ class StreamFormatter extends NormalizerFormatter
                             $this->addFact($table, 'previous Throwable', $value);
 
                             $prev = $prev->getPrevious();
-                        } while ($prev instanceof \Throwable);
+                        } while ($prev instanceof Throwable);
                     }
 
                     continue;
@@ -165,6 +208,12 @@ class StreamFormatter extends NormalizerFormatter
         return $output->fetch();
     }
 
+    /**
+     * @param  array[] $records
+     * @phpstan-param Record[] $records
+     *
+     * @throws RuntimeException if encoding fails and errors are not ignored
+     */
     public function formatBatch(array $records): string
     {
         $message = '';
@@ -177,6 +226,8 @@ class StreamFormatter extends NormalizerFormatter
 
     /**
      * @param mixed $value
+     *
+     * @throws RuntimeException if encoding fails and errors are not ignored
      */
     public function stringify($value): string
     {
@@ -185,8 +236,10 @@ class StreamFormatter extends NormalizerFormatter
 
     /**
      * @param mixed $data
+     *
+     * @throws RuntimeException if encoding fails and errors are not ignored
      */
-    protected function convertToString($data): string
+    private function convertToString($data): string
     {
         if (null === $data || is_bool($data)) {
             return var_export($data, true);
@@ -199,11 +252,11 @@ class StreamFormatter extends NormalizerFormatter
         return $this->toJson($data, true);
     }
 
-    protected function replaceNewlines(string $str): string
+    private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
-            if (0 === strpos($str, '{')) {
-                return str_replace(array('\r', '\n'), array("\r", "\n"), $str);
+            if (0 === mb_strpos($str, '{')) {
+                return str_replace(['\r', '\n'], ["\r", "\n"], $str);
             }
 
             return $str;
@@ -213,9 +266,9 @@ class StreamFormatter extends NormalizerFormatter
     }
 
     /**
-     * @param string $name
      * @param mixed $value
-     * @return void
+     *
+     * @throws RuntimeException if encoding fails and errors are not ignored
      */
     private function addFact(Table $table, string $name, $value): void
     {
