@@ -1,6 +1,6 @@
 {
-  "name": "mimmi20/template",
-  "description": "Provides a GitHub repository template for a PHP library, using GitHub actions.",
+  "name": "mimmi20/monolog-streamformatter",
+  "description": "Provides a Stream Formatter for Monolog",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -10,22 +10,25 @@
       "role": "Developer"
     }
   ],
-  "homepage": "https://github.com/mimmi20/template",
+  "homepage": "https://github.com/mimmi20/monolog-streamformatter",
   "support": {
-    "issues": "https://github.com/mimmi20/template/issues",
-    "source": "https://github.com/mimmi20/template"
+    "issues": "https://github.com/mimmi20/monolog-streamformatter/issues",
+    "source": "https://github.com/mimmi20/monolog-streamformatter"
   },
   "require": {
     "php": "^7.4.3 || ^8.0.0",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "monolog/monolog": "^2.6.0",
+    "symfony/console": "^v5.4.8 || ^v6.0.8"
   },
   "require-dev": {
-    "mimmi20/coding-standard": "^2.6.2",
+    "ext-json": "*",
+    "mimmi20/coding-standard": "^2.8.0",
     "phpstan/extension-installer": "^1.1.0",
-    "phpstan/phpstan": "^1.4.2",
+    "phpstan/phpstan": "^1.6.8",
     "phpstan/phpstan-deprecation-rules": "^1.0.0",
-    "phpstan/phpstan-phpunit": "^1.0.0",
-    "phpunit/phpunit": "^9.5.12"
+    "phpstan/phpstan-phpunit": "^1.1.1",
+    "phpunit/phpunit": "^9.5.20"
   },
   "config": {
     "preferred-install": "dist",

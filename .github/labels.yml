@@ -54,7 +54,7 @@
   name: "documentation"
   description: "Improvements or additions to documentation"
 
-# other Labels to mimmi20/template
+# other Labels to mimmi20/monolog-streamformatter
 #- color: 5319e7
 #  name: "new useragents"
 #  description: ""

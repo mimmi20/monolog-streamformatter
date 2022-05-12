@@ -395,7 +395,7 @@ jobs:
         run: "vendor/bin/phpunit -c phpunit.xml --verbose --no-coverage"
 
   code-coverage:
-    name: "Code Coverage with PHPUnit"
+    name: "Code Coverage with PHPUnit with all Extensions"
 
     needs: "tests"
 
@@ -408,13 +408,17 @@ jobs:
 
       matrix:
         operating-system:
+          - "ubuntu-18.04"
           - "ubuntu-20.04"
 
         php-version:
           - "7.4"
+          - "8.0"
+          - "8.1"
 
         dependencies:
           - "highest"
+          - "lowest"
 
         coverage-drivers:
           - "xdebug"
@@ -431,9 +435,9 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
-          ini-values: "${{ env.PHP_INI_VALUES }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}, xdebug.mode=coverage"
           coverage: "${{ matrix.coverage-drivers }}"
-          tools: "${{ env.TOOLS }}, infection"
+          tools: "${{ env.TOOLS }}, infection:0.26.6"
 
       - name: "Update dependencies with composer"
         uses: "ramsey/composer-install@v1"
@@ -448,61 +452,11 @@ jobs:
         run: "vendor/bin/phpunit -c phpunit.xml --verbose --coverage-clover=.build/coverage/clover.xml --coverage-text --coverage-xml=.build/coverage/coverage-xml --log-junit=.build/coverage/phpunit.junit.xml"
 
       - name: "Upload coverage to Codecov"
-        uses: "codecov/codecov-action@v3"
+        uses: "codecov/codecov-action@v3.1.0"
         with:
           file: ".build/coverage/clover.xml"
-          flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.coverage-drivers }},${{ matrix.php-version }},${{ matrix.operating-system }}"
+          flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.coverage-drivers }},${{ matrix.php-version }},${{ matrix.operating-system }},with-all-extensions"
           verbose: false
 
       - name: "Run mutation tests with infection/infection"
-        run: "infection -s --min-covered-msi=84 --min-msi=84 --coverage=.build/coverage --logger-github"
-
-  roave-backwards-compatibility-check:
-    name: "Check for Backward Compatibility breaks"
-
-    needs: "lint"
-
-    runs-on: "${{ matrix.operating-system }}"
-
-    continue-on-error: false
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
-        php-version:
-          - "8.1"
-
-        dependencies:
-          - "highest"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.18.1"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.PHP_EXTENSIONS }}, sodium, intl"
-          ini-values: "${{ env.PHP_INI_VALUES }}"
-          coverage: "none"
-          tools: "${{ env.TOOLS }}"
-
-      - name: "Require Roave/BackwardCompatibilityCheck"
-        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable --dev \"roave/backward-compatibility-check:^6.1\" \"mimmi20/coding-standard:^2.6\" \"friendsofphp/php-cs-fixer:^3.4\""
-
-      - name: "Update dependencies with composer"
-        uses: "ramsey/composer-install@v1"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }}"
-
-      - name: "Check for BC breaks"
-        run: "vendor/bin/roave-backward-compatibility-check --format=github-actions"
+        run: "infection -s --min-covered-msi=90 --min-msi=87 --coverage=.build/coverage --only-covered --logger-github"
