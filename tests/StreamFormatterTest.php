@@ -267,4 +267,47 @@ test message
 
         self::assertSame($expected, $formatted);
     }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat2(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $formatter = new StreamFormatter();
+        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message
+
+
+┌──────────────────────┬──────────────────────┬──── ERROR ───────────────────────────────────────────────────┐
+│ General Info                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Time                 │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                           │
+│ Level                │ ERROR                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Extra                                                                                                      │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ App                  │ test-app                                                                            │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Context                                                                                                    │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ One                  │ NULL                                                                                │
+│ Two                  │ true                                                                                │
+│ Three                │ false                                                                               │
+│ Four                 │ 0                    │ abc                                                          │
+│                      │ 1                    │ xyz                                                          │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────┘
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
 }
