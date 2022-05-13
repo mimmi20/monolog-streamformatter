@@ -23,6 +23,7 @@ use Throwable;
 
 use function array_keys;
 use function count;
+use function get_class;
 use function is_array;
 use function is_bool;
 use function is_scalar;
@@ -165,7 +166,7 @@ final class StreamFormatter extends NormalizerFormatter
                     $exception = $value;
 
                     $value = [
-                        'Type' => $exception::class,
+                        'Type' => get_class($exception),
                         'Message' => $exception->getMessage(),
                         'Code' => $exception->getCode(),
                         'File' => $exception->getFile(),
@@ -180,7 +181,7 @@ final class StreamFormatter extends NormalizerFormatter
                     if ($prev instanceof Throwable) {
                         do {
                             $value = [
-                                'Type' => $prev::class,
+                                'Type' => get_class($prev),
                                 'Message' => $prev->getMessage(),
                                 'Code' => $prev->getCode(),
                                 'File' => $prev->getFile(),
