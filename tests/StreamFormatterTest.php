@@ -385,4 +385,190 @@ test message ["abc","xyz"] test-app
 
         self::assertSame($expected, $formatted);
     }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat5(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, false);
+        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message test test test-app
+
+
++----------------------+----------------------+---- ERROR ---------------------------------------------------+
+| General Info                                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Time                 | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                           |
+| Level                | ERROR                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Context                                                                                                    |
++----------------------+----------------------+--------------------------------------------------------------+
+| One                  | NULL                                                                                |
+| Two                  | true                                                                                |
+| Three                | false                                                                               |
+| Four                 | 0                    | abc                                                          |
+|                      | 1                    | xyz                                                          |
++----------------------+----------------------+--------------------------------------------------------------+
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat6(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, true);
+        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message test
+test test-app
+
+
++----------------------+----------------------+---- ERROR ---------------------------------------------------+
+| General Info                                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Time                 | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                           |
+| Level                | ERROR                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Context                                                                                                    |
++----------------------+----------------------+--------------------------------------------------------------+
+| One                  | NULL                                                                                |
+| Two                  | true                                                                                |
+| Three                | false                                                                               |
+| Four                 | 0                    | abc                                                          |
+|                      | 1                    | xyz                                                          |
++----------------------+----------------------+--------------------------------------------------------------+
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat7(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $exception = new RuntimeException('error');
+
+        $formatter = new StreamFormatter('%message% %context.five% %extra.Exception%', 'default', null, true);
+        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception]]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message test
+test {"class":"RuntimeException","message":"error","code":0,"file":"/home/developer/projects/monolog-streamformatter/tests/StreamFormatterTest.php:479","trace":["#0 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(1545): Mimmi20Test\\\\Monolog\\\\Formatter\\\\StreamFormatterTest->testFormat7()","#1 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(1151): PHPUnit\\\\Framework\\\\TestCase->runTest()","#2 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestResult.php(726): PHPUnit\\\\Framework\\\\TestCase->runBare()","#3 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(903): PHPUnit\\\\Framework\\\\TestResult->run()","#4 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\\\\Framework\\\\TestCase->run()","#5 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\\\\Framework\\\\TestSuite->run()","#6 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\\\\Framework\\\\TestSuite->run()","#7 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/TestRunner.php(673): PHPUnit\\\\Framework\\\\TestSuite->run()","#8 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php(143): PHPUnit\\\\TextUI\\\\TestRunner->run()","#9 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php(96): PHPUnit\\\\TextUI\\\\Command->run()","#10 phpvfscomposer:///home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/phpunit(97): PHPUnit\\\\TextUI\\\\Command::main()","#11 /home/developer/projects/monolog-streamformatter/vendor/bin/phpunit(115): include(\'phpvfscomposer:///home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/phpunit\')"]}
+
+
++----------------------+----------------------+---- ERROR ---------------------------------------------------+
+| General Info                                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Time                 | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                           |
+| Level                | ERROR                                                                               |
++----------------------+----------------------+--------------------------------------------------------------+
+| Extra                                                                                                      |
++----------------------+----------------------+--------------------------------------------------------------+
+| App                  | test-app                                                                            |
++----------------------+----------------------+--------------------------------------------------------------+
+| Context                                                                                                    |
++----------------------+----------------------+--------------------------------------------------------------+
+| One                  | NULL                                                                                |
+| Two                  | true                                                                                |
+| Three                | false                                                                               |
+| Four                 | 0                    | abc                                                          |
+|                      | 1                    | xyz                                                          |
++----------------------+----------------------+--------------------------------------------------------------+
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat8(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $exception = new RuntimeException('error');
+
+        $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, true);
+        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception]]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message test
+test test-app
+
+
++----------------------+----------------------+------------------------------------------------------------------- ERROR -----------------------------------------------------------------------------------------------------------------+
+| General Info                                                                                                                                                                                                                            |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Time                 | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                        |
+| Level                | ERROR                                                                                                                                                                                                            |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Extra                                                                                                                                                                                                                                   |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Exception            | class                | RuntimeException                                                                                                                                                                          |
+|                      | message              | error                                                                                                                                                                                     |
+|                      | code                 | 0                                                                                                                                                                                         |
+|                      | file                 | ' . $exception->getFile() . ':' . $exception->getLine() . '                                                                                                        |
+|                      | trace                | #0 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(1545): Mimmi20Test\Monolog\Formatter\StreamFormatterTest->testFormat8()             |
+|                      |                      | #1 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(1151): PHPUnit\Framework\TestCase->runTest()                                        |
+|                      |                      | #2 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestResult.php(726): PHPUnit\Framework\TestCase->runBare()                                       |
+|                      |                      | #3 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php(903): PHPUnit\Framework\TestResult->run()                                           |
+|                      |                      | #4 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\Framework\TestCase->run()                                            |
+|                      |                      | #5 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\Framework\TestSuite->run()                                           |
+|                      |                      | #6 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php(677): PHPUnit\Framework\TestSuite->run()                                           |
+|                      |                      | #7 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/TestRunner.php(673): PHPUnit\Framework\TestSuite->run()                                             |
+|                      |                      | #8 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php(143): PHPUnit\TextUI\TestRunner->run()                                                  |
+|                      |                      | #9 /home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php(96): PHPUnit\TextUI\Command->run()                                                      |
+|                      |                      | #10 phpvfscomposer:///home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/phpunit(97): PHPUnit\TextUI\Command::main()                                                  |
+|                      |                      | #11 /home/developer/projects/monolog-streamformatter/vendor/bin/phpunit(115): include(\'phpvfscomposer:///home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/phpunit\') |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Context                                                                                                                                                                                                                                 |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| One                  | NULL                                                                                                                                                                                                             |
+| Two                  | true                                                                                                                                                                                                             |
+| Three                | false                                                                                                                                                                                                            |
+| Four                 | 0                    | abc                                                                                                                                                                                       |
+|                      | 1                    | xyz                                                                                                                                                                                       |
++----------------------+----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
 }
