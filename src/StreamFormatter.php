@@ -247,7 +247,7 @@ final class StreamFormatter extends NormalizerFormatter
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */
-    public function stringify($value): string
+    private function stringify($value): string
     {
         return $this->replaceNewlines($this->convertToString($value));
     }
@@ -299,28 +299,6 @@ final class StreamFormatter extends NormalizerFormatter
             $rowspan = count($value);
 
             foreach (array_keys($value) as $number => $key) {
-                if (!is_array($value[$key])) {
-                    continue;
-                }
-
-                $rowspan += count($value[$key]) - 1;
-            }
-
-            foreach (array_keys($value) as $number => $key) {
-                if (is_array($value[$key])) {
-                    foreach (array_keys($value[$key]) as $line) {
-                        if (0 === $number) {
-                            $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), new TableCell($key, ['rowspan' => count($value[$key])]), $value[$key][$line]]);
-                        } elseif (0 === $line) {
-                            $table->addRow([new TableCell($key, ['rowspan' => count($value[$key])]), $value[$key][$line]]);
-                        } else {
-                            $table->addRow([$value[$key][$line]]);
-                        }
-                    }
-
-                    continue;
-                }
-
                 if (0 === $number) {
                     $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), $key, $value[$key]]);
                 } else {
