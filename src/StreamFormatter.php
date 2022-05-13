@@ -18,6 +18,7 @@ use Monolog\Logger;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableCellStyle;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Throwable;
@@ -156,12 +157,15 @@ final class StreamFormatter extends NormalizerFormatter
 
         $table = new Table($output);
         $table->setStyle($this->tableStyle);
-        $table->setColumnWidths([20, 20, 60]);
+        $table->setColumnMaxWidth(0, 20);
+        $table->setColumnMaxWidth(1, 20);
+        $table->setColumnMaxWidth(2, 220);
+        $table->setColumnWidths([20, 20, 220]);
         $table->setHeaderTitle($record['level_name']);
         $table->setHeaders([new TableCell('General Info', ['colspan' => 3])]);
 
-        $table->addRow(['Time', new TableCell($record['datetime']->format($this->dateFormat), ['colspan' => 2])]);
-        $table->addRow(['Level', new TableCell($record['level_name'], ['colspan' => 2])]);
+        $table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record['datetime']->format($this->dateFormat), ['colspan' => 2])]);
+        $table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record['level_name'], ['colspan' => 2])]);
 
         $output->writeln('');
 
@@ -306,7 +310,7 @@ final class StreamFormatter extends NormalizerFormatter
                 if (is_array($value[$key])) {
                     foreach (array_keys($value[$key]) as $line) {
                         if (0 === $number) {
-                            $table->addRow([new TableCell(ucfirst($name), ['rowspan' => $rowspan]), new TableCell($key, ['rowspan' => count($value[$key])]), $value[$key][$line]]);
+                            $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), new TableCell($key, ['rowspan' => count($value[$key])]), $value[$key][$line]]);
                         } elseif (0 === $line) {
                             $table->addRow([new TableCell($key, ['rowspan' => count($value[$key])]), $value[$key][$line]]);
                         } else {
@@ -318,7 +322,7 @@ final class StreamFormatter extends NormalizerFormatter
                 }
 
                 if (0 === $number) {
-                    $table->addRow([new TableCell(ucfirst($name), ['rowspan' => $rowspan]), $key, $value[$key]]);
+                    $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), $key, $value[$key]]);
                 } else {
                     $table->addRow([$key, $value[$key]]);
                 }
@@ -331,6 +335,6 @@ final class StreamFormatter extends NormalizerFormatter
             $value = $this->stringify($value);
         }
 
-        $table->addRow([ucfirst($name), new TableCell($value, ['colspan' => 2])]);
+        $table->addRow([new TableCell($name, ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($value, ['colspan' => 2])]);
     }
 }
