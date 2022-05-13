@@ -12,6 +12,7 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Monolog\Formatter;
 
+use DateTimeImmutable;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Logger;
 use RuntimeException;
@@ -26,6 +27,7 @@ use function count;
 use function get_class;
 use function is_array;
 use function is_bool;
+use function is_iterable;
 use function is_scalar;
 use function is_string;
 use function mb_strpos;
@@ -36,6 +38,8 @@ use function ucfirst;
 use function var_export;
 
 /**
+ * @phpstan-import-type Level from Logger
+ * @phpstan-import-type LevelName from Logger
  * @phpstan-import-type Record from Logger
  */
 final class StreamFormatter extends NormalizerFormatter
@@ -102,7 +106,7 @@ final class StreamFormatter extends NormalizerFormatter
     public function format(array $record): string
     {
         /** @var scalar|array<(array|scalar|null)>|null $vars */
-        /** @phpstan-var Record $vars */
+        /** @phpstan-var array{message: string, context: mixed[], level: Level, level_name: LevelName, channel: string, datetime: DateTimeImmutable, extra: mixed[]} $vars */
         $vars = parent::format($record);
 
         $message = $this->format;
@@ -141,6 +145,7 @@ final class StreamFormatter extends NormalizerFormatter
             }
 
             $message = str_replace('%' . $var . '%', $this->stringify($val), $message);
+            unset($vars[$var]);
         }
 
         $output = new BufferedOutput();
@@ -161,7 +166,7 @@ final class StreamFormatter extends NormalizerFormatter
         $output->writeln('');
 
         foreach (['extra', 'context'] as $element) {
-            if (empty($record[$element])) {
+            if (empty($vars[$element]) || !is_iterable($vars[$element])) {
                 continue;
             }
 
@@ -169,7 +174,7 @@ final class StreamFormatter extends NormalizerFormatter
             $table->addRow([new TableCell(ucfirst($element), ['colspan' => 3])]);
             $table->addRow(new TableSeparator());
 
-            foreach ($record[$element] as $key => $value) {
+            foreach ($vars[$element] as $key => $value) {
                 if ($value instanceof Throwable) {
                     $exception = $value;
 
