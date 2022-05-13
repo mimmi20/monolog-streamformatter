@@ -22,3 +22,4 @@ tests/temp/*.ini
 .phpunit.result.cache
 infection-*.log
 rewrite*.php
+.reports/

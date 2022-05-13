@@ -30,27 +30,6 @@
     "phpstan/phpstan-phpunit": "^1.1.1",
     "phpunit/phpunit": "^9.5.20"
   },
-  "suggest": {
-    "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-    "ext-json": "Allow sending log messages to the ChromePHP Handler",
-    "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
-    "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
-    "actived/microsoft-teams-notifier": "Allow sending log messages to Microsoft Teams",
-    "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
-    "bartlett/monolog-callbackfilterhandler": "Allow filtering log messages based on a callback function",
-    "cmdisp/monolog-microsoft-teams": "Allow sending log messages to Microsoft Teams",
-    "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-    "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
-    "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-    "jk/monolog-request-header-processor": "Allow to add request headers to the log message",
-    "laminas/laminas-servicemanager": "Required for the Factories",
-    "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
-    "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-    "php-console/php-console": "Allow sending log messages to Google Chrome",
-    "rollbar/rollbar": "Allow sending log messages to Rollbar (only 2.1+ supported, but not 3.x)",
-    "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
-    "swiftmailer/swiftmailer": "Allow sending log messages to Email clients"
-  },
   "autoload": {
     "psr-4": {
       "Mimmi20\\Monolog\\Formatter\\": "src/"
