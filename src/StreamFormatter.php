@@ -13,30 +13,24 @@ declare(strict_types = 1);
 namespace Mimmi20\Monolog\Formatter;
 
 use DateTimeImmutable;
-use JsonSerializable;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Logger;
-use Monolog\Utils;
 use RuntimeException;
-use SoapFault;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Throwable;
 
-use function array_key_exists;
 use function array_keys;
 use function count;
-use function implode;
+use function get_class;
 use function is_array;
 use function is_bool;
 use function is_iterable;
-use function is_object;
 use function is_scalar;
 use function is_string;
 use function mb_strpos;
-use function sprintf;
 use function str_repeat;
 use function str_replace;
 use function trim;
@@ -181,6 +175,42 @@ final class StreamFormatter extends NormalizerFormatter
             $table->addRow(new TableSeparator());
 
             foreach ($vars[$element] as $key => $value) {
+                if (isset($record[$element][$key]) && $record[$element][$key] instanceof Throwable) {
+                    $exception = $record[$element][$key];
+
+                    $value = [
+                        'Type' => get_class($exception),
+                        'Message' => $exception->getMessage(),
+                        'Code' => $exception->getCode(),
+                        'File' => $exception->getFile(),
+                        'Line' => $exception->getLine(),
+                        'Trace' => $exception->getTraceAsString(),
+                    ];
+
+                    $this->addFact($table, $key, $value);
+
+                    $prev = $exception->getPrevious();
+
+                    if ($prev instanceof Throwable) {
+                        do {
+                            $value = [
+                                'Type' => get_class($prev),
+                                'Message' => $prev->getMessage(),
+                                'Code' => $prev->getCode(),
+                                'File' => $prev->getFile(),
+                                'Line' => $prev->getLine(),
+                                'Trace' => $prev->getTraceAsString(),
+                            ];
+
+                            $this->addFact($table, 'previous Throwable', $value);
+
+                            $prev = $prev->getPrevious();
+                        } while ($prev instanceof Throwable);
+                    }
+
+                    continue;
+                }
+
                 $this->addFact($table, $key, $value);
             }
         }
@@ -216,60 +246,6 @@ final class StreamFormatter extends NormalizerFormatter
     public function stringify($value): string
     {
         return $this->replaceNewlines($this->convertToString($value));
-    }
-
-    /**
-     * @return mixed[]
-     *
-     * @throws RuntimeException
-     */
-    protected function normalizeException(Throwable $e, int $depth = 0): array
-    {
-        if ($e instanceof JsonSerializable) {
-            return (array) $e->jsonSerialize();
-        }
-
-        $data = [
-            'class' => Utils::getClass($e),
-            'message' => $e->getMessage(),
-            'code' => (int) $e->getCode(),
-            'file' => $e->getFile() . ':' . $e->getLine(),
-        ];
-
-        if ($e instanceof SoapFault) {
-            $data['faultcode']  = $e->faultcode;
-            $data['faultactor'] = $e->faultactor;
-
-            if (isset($e->detail)) {
-                if (is_string($e->detail)) {
-                    $data['detail'] = $e->detail;
-                } elseif (is_object($e->detail) || is_array($e->detail)) {
-                    $data['detail'] = $this->toJson($e->detail, true);
-                }
-            }
-        }
-
-        $trace = $e->getTrace();
-        foreach ($trace as $step => $frame) {
-            $data['trace'][] = sprintf(
-                '#%d %s(%d): %s%s%s(%s)',
-                $step,
-                $frame['file'] ?? '',
-                $frame['line'] ?? '',
-                $frame['class'] ?? '',
-                $frame['type'] ?? '',
-                $frame['function'],
-                array_key_exists('args', $frame) ? '\'' . implode('\', \'', $frame['args']) . '\'' : ''
-            );
-        }
-
-        $previous = $e->getPrevious();
-
-        if ($previous instanceof Throwable) {
-            $data['previous'] = $this->normalizeException($previous, $depth + 1);
-        }
-
-        return $data;
     }
 
     /**
