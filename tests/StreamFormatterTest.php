@@ -12,12 +12,15 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Monolog\Formatter;
 
+use DateTimeImmutable;
 use Mimmi20\Monolog\Formatter\StreamFormatter;
 use Monolog\Formatter\NormalizerFormatter;
+use Monolog\Logger;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionProperty;
+use RuntimeException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class StreamFormatterTest extends TestCase
@@ -63,10 +66,9 @@ final class StreamFormatterTest extends TestCase
      */
     public function testConstructWithValues(): void
     {
-        $format                = '[%level_name%] %message%';
-        $tableStyle            = 'test-style';
-        $dateFormat            = 'c';
-        $allowInlineLineBreaks = true;
+        $format     = '[%level_name%] %message%';
+        $tableStyle = 'test-style';
+        $dateFormat = 'c';
 
         $formatter = new StreamFormatter($format, $tableStyle, $dateFormat, true, false);
 
@@ -233,5 +235,36 @@ final class StreamFormatterTest extends TestCase
         $ts->setAccessible(true);
 
         self::assertSame($tableStyle, $ts->getValue($formatter));
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function testFormat(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $formatter = new StreamFormatter();
+        $formatted = $formatter->format(['message' => $message, 'context' => [], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => []]);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message
+
+
+┌──────────────────────┬──────────────────────┬──── ERROR ───────────────────────────────────────────────────┐
+│ General Info                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Time                 │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                           │
+│ Level                │ ERROR                                                                               │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────┘
+
+';
+
+        self::assertSame($expected, $formatted);
     }
 }

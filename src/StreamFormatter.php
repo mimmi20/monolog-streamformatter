@@ -52,6 +52,8 @@ final class StreamFormatter extends NormalizerFormatter
      * @param string|null $format                The format of the message
      * @param string|null $dateFormat            The format of the timestamp: one supported by DateTime::format
      * @param bool        $allowInlineLineBreaks Whether to allow inline line breaks in log entries
+     *
+     * @throws void
      */
     public function __construct(?string $format = null, string $tableStyle = self::BOX_STYLE, ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
     {
@@ -63,6 +65,9 @@ final class StreamFormatter extends NormalizerFormatter
         parent::__construct($dateFormat);
     }
 
+    /**
+     * @throws void
+     */
     public function includeStacktraces(bool $include = true): self
     {
         $this->includeStacktraces = $include;
@@ -74,6 +79,9 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
+    /**
+     * @throws void
+     */
     public function allowInlineLineBreaks(bool $allow = true): self
     {
         $this->allowInlineLineBreaks = $allow;
@@ -253,6 +261,9 @@ final class StreamFormatter extends NormalizerFormatter
         return $this->toJson($data, true);
     }
 
+    /**
+     * @throws void
+     */
     private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
