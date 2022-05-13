@@ -23,8 +23,10 @@ use ReflectionProperty;
 use RuntimeException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
+use function array_map;
 use function count;
 use function explode;
+use function implode;
 use function str_pad;
 
 use const PHP_EOL;
@@ -484,13 +486,18 @@ test test-app
 
         $exception = new RuntimeException('error');
 
+        $formattedTrace = array_map(
+            static fn (array $entry): string => ($entry['file'] ?? '') . ':' . ($entry['line'] ?? ''),
+            $exception->getTrace()
+        );
+
         $formatter = new StreamFormatter('%message% %context.five% <%extra.Exception%>', 'default', null, true);
         $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception]]);
 
         $expected = '============================================================================================================================================================================================================================
 
 test message test
-test <{"class":"RuntimeException","message":"error","code":0,"file":"/home/developer/projects/monolog-streamformatter/tests/StreamFormatterTest.php:485","trace":["/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php:1545","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php:1151","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestResult.php:726","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestCase.php:903","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php:677","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php:677","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/Framework/TestSuite.php:677","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/TestRunner.php:673","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php:143","/home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/src/TextUI/Command.php:96","phpvfscomposer:///home/developer/projects/monolog-streamformatter/vendor/phpunit/phpunit/phpunit:97","/home/developer/projects/monolog-streamformatter/vendor/bin/phpunit:115"]}>
+test <{"class":"RuntimeException","message":"error","code":0,"file":"' . $exception->getFile() . ':' . $exception->getLine() . '","trace":["' . implode('","', $formattedTrace) . '"]}>
 
 
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
