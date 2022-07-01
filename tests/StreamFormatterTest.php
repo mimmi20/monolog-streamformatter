@@ -16,6 +16,7 @@ use DateTimeImmutable;
 use Mimmi20\Monolog\Formatter\StreamFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use OutOfRangeException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -50,22 +51,18 @@ final class StreamFormatterTest extends TestCase
         self::assertSame(1000, $formatter->getMaxNormalizeItemCount());
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertFalse($ailb->getValue($formatter));
 
         $format = new ReflectionProperty($formatter, 'format');
-        $format->setAccessible(true);
 
         self::assertSame(StreamFormatter::SIMPLE_FORMAT, $format->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertFalse($st->getValue($formatter));
 
         $ts = new ReflectionProperty($formatter, 'tableStyle');
-        $ts->setAccessible(true);
 
         self::assertSame(StreamFormatter::BOX_STYLE, $ts->getValue($formatter));
     }
@@ -88,22 +85,18 @@ final class StreamFormatterTest extends TestCase
         self::assertSame(1000, $formatter->getMaxNormalizeItemCount());
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertTrue($ailb->getValue($formatter));
 
         $formatP = new ReflectionProperty($formatter, 'format');
-        $formatP->setAccessible(true);
 
         self::assertSame($format, $formatP->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertFalse($st->getValue($formatter));
 
         $ts = new ReflectionProperty($formatter, 'tableStyle');
-        $ts->setAccessible(true);
 
         self::assertSame($tableStyle, $ts->getValue($formatter));
     }
@@ -126,22 +119,18 @@ final class StreamFormatterTest extends TestCase
         self::assertSame(1000, $formatter->getMaxNormalizeItemCount());
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertTrue($ailb->getValue($formatter));
 
         $formatP = new ReflectionProperty($formatter, 'format');
-        $formatP->setAccessible(true);
 
         self::assertSame($format, $formatP->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertTrue($st->getValue($formatter));
 
         $ts = new ReflectionProperty($formatter, 'tableStyle');
-        $ts->setAccessible(true);
 
         self::assertSame($tableStyle, $ts->getValue($formatter));
     }
@@ -164,29 +153,24 @@ final class StreamFormatterTest extends TestCase
         self::assertSame(1000, $formatter->getMaxNormalizeItemCount());
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertFalse($ailb->getValue($formatter));
 
         $formatter->allowInlineLineBreaks();
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertTrue($ailb->getValue($formatter));
 
         $formatP = new ReflectionProperty($formatter, 'format');
-        $formatP->setAccessible(true);
 
         self::assertSame($format, $formatP->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertFalse($st->getValue($formatter));
 
         $ts = new ReflectionProperty($formatter, 'tableStyle');
-        $ts->setAccessible(true);
 
         self::assertSame($tableStyle, $ts->getValue($formatter));
     }
@@ -209,41 +193,34 @@ final class StreamFormatterTest extends TestCase
         self::assertSame(1000, $formatter->getMaxNormalizeItemCount());
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertTrue($ailb->getValue($formatter));
 
         $formatter->allowInlineLineBreaks(false);
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertFalse($ailb->getValue($formatter));
 
         $formatP = new ReflectionProperty($formatter, 'format');
-        $formatP->setAccessible(true);
 
         self::assertSame($format, $formatP->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertFalse($st->getValue($formatter));
 
         $formatter->includeStacktraces();
 
         $ailb = new ReflectionProperty($formatter, 'allowInlineLineBreaks');
-        $ailb->setAccessible(true);
 
         self::assertTrue($ailb->getValue($formatter));
 
         $st = new ReflectionProperty($formatter, 'includeStacktraces');
-        $st->setAccessible(true);
 
         self::assertTrue($st->getValue($formatter));
 
         $ts = new ReflectionProperty($formatter, 'tableStyle');
-        $ts->setAccessible(true);
 
         self::assertSame($tableStyle, $ts->getValue($formatter));
     }
@@ -260,7 +237,17 @@ final class StreamFormatterTest extends TestCase
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter();
-        $formatted = $formatter->format(['message' => $message, 'context' => [], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => []]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: [],
+            extra: [],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -270,13 +257,13 @@ test message
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 └──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 ';
 
-        self::assertSame($expected, $formatted);
+        self::assertSame(str_replace(["\r\n", "\n", "\r"], PHP_EOL, $expected), $formatted);
     }
 
     /**
@@ -291,7 +278,17 @@ test message
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter();
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: ['app' => 'test-app'],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -301,7 +298,7 @@ test message
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Extra                                                                                                                                                                                                                                                                      │
@@ -334,7 +331,17 @@ test message
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter('%message% %context.two% %extra.app%');
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: ['app' => 'test-app'],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -344,7 +351,7 @@ test message true test-app
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
@@ -372,7 +379,17 @@ test message true test-app
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter('%message% %context.four% %extra.app%');
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: ['app' => 'test-app'],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -382,7 +399,7 @@ test message ["abc","xyz"] test-app
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
@@ -409,7 +426,17 @@ test message ["abc","xyz"] test-app
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, false);
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app'],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -419,7 +446,7 @@ test message test test test-app
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Time | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Context                                                                                                                                                                                                                                                                    |
@@ -448,7 +475,17 @@ test message test test test-app
         $datetime = new DateTimeImmutable('now');
 
         $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, true);
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app'],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -459,7 +496,7 @@ test test-app
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Time | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Context                                                                                                                                                                                                                                                                    |
@@ -495,7 +532,17 @@ test test-app
         );
 
         $formatter = new StreamFormatter('%message% %context.five% <%extra.Exception%>', 'default', null, true);
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception]]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app', 'Exception' => $exception],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -506,7 +553,7 @@ test <{"class":"RuntimeException","message":"error","code":0,"file":"' . $except
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Time | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Extra                                                                                                                                                                                                                                                                      |
@@ -543,7 +590,17 @@ test <{"class":"RuntimeException","message":"error","code":0,"file":"' . $except
         $trace = explode(PHP_EOL, $exception->getTraceAsString());
 
         $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, true);
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception]]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app', 'Exception' => $exception],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -554,7 +611,7 @@ test test-app
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Time | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Extra                                                                                                                                                                                                                                                                      |
@@ -606,7 +663,17 @@ test test-app
         $trace3 = explode(PHP_EOL, $exception3->getTraceAsString());
 
         $formatter = new StreamFormatter('%message% %context.five% %extra.app%', 'default', null, true);
-        $formatted = $formatter->format(['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app', 'Exception' => $exception3]]);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app', 'Exception' => $exception3],
+        );
+
+        $formatted = $formatter->format($record);
 
         $expected = '============================================================================================================================================================================================================================
 
@@ -617,7 +684,7 @@ test test-app
 +----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Time | ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Extra                                                                                                                                                                                                                                                                      |
@@ -684,9 +751,30 @@ test test-app
         $channel  = 'test-channel';
         $datetime = new DateTimeImmutable('now');
 
-        $record1 = ['message' => $message, 'context' => [], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => []];
-        $record2 = ['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']];
-        $record3 = ['message' => $message, 'context' => ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"], 'level' => Logger::ERROR, 'level_name' => 'ERROR', 'channel' => $channel, 'datetime' => $datetime, 'extra' => ['app' => 'test-app']];
+        $record1 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: [],
+            extra: [],
+        );
+        $record2 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: ['app' => 'test-app'],
+        );
+        $record3 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: \Monolog\Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app'],
+        );
 
         $formatter = new StreamFormatter();
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
@@ -699,7 +787,7 @@ test message
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 └──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -711,7 +799,7 @@ test message
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Extra                                                                                                                                                                                                                                                                      │
@@ -735,7 +823,7 @@ test message
 ┌──────────────────────┬──────────────────────┬──────────────────────────────────────────────────────────────────────────────────── ERROR ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ General Info                                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                 Time │ ' . $datetime->format(StreamFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Extra                                                                                                                                                                                                                                                                      │
