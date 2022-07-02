@@ -42,10 +42,6 @@ return $config
                     'location' => 'after_open',
                     'separate' => 'bottom',
                 ],
-                '@PHP74Migration' => true,
-                '@PHP74Migration:risky' => true,
-                '@PHP80Migration' => false,
-                '@PHP80Migration:risky' => false,
             ]
         )
     )

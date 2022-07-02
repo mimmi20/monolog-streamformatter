@@ -16,8 +16,8 @@
 
 Run
 
-```
-$ composer require mimmi20/monolog-streamformatter
+```shell
+composer require mimmi20/monolog-streamformatter
 ```
 
 ## Usage

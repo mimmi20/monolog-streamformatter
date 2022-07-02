@@ -14,7 +14,8 @@ namespace Mimmi20\Monolog\Formatter;
 
 use DateTimeImmutable;
 use Monolog\Formatter\NormalizerFormatter;
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -25,7 +26,6 @@ use Throwable;
 
 use function array_keys;
 use function count;
-use function get_class;
 use function is_array;
 use function is_bool;
 use function is_iterable;
@@ -38,11 +38,6 @@ use function trim;
 use function ucfirst;
 use function var_export;
 
-/**
- * @phpstan-import-type Level from Logger
- * @phpstan-import-type LevelName from Logger
- * @phpstan-import-type Record from Logger
- */
 final class StreamFormatter extends NormalizerFormatter
 {
     public const SIMPLE_FORMAT = '%message%';
@@ -97,18 +92,15 @@ final class StreamFormatter extends NormalizerFormatter
     /**
      * Formats a log record.
      *
-     * @param  array $record A record to format
-     * @phpstan-param Record $record
-     *
      * @return string The formatted record
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */
-    public function format(array $record): string
+    public function format(LogRecord $record): string
     {
         /** @var scalar|array<(array|scalar|null)>|null $vars */
-        /** @phpstan-var array{message: string, context: mixed[], level: Level, level_name: LevelName, channel: string, datetime: DateTimeImmutable, extra: mixed[]} $vars */
-        $vars = parent::format($record);
+        /** @phpstan-var array{message: string, context: mixed[], level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: mixed[]} $vars */
+        $vars = $this->normalizeRecord($record);
 
         $message = $this->format;
 
@@ -149,6 +141,8 @@ final class StreamFormatter extends NormalizerFormatter
             unset($vars[$var]);
         }
 
+        $levelName = Level::fromValue($record->level->value)->getName();
+
         $output = new BufferedOutput();
         $output->writeln(str_repeat('=', 220));
         $output->writeln('');
@@ -161,11 +155,11 @@ final class StreamFormatter extends NormalizerFormatter
         $table->setColumnMaxWidth(1, 20);
         $table->setColumnMaxWidth(2, 220);
         $table->setColumnWidths([20, 20, 220]);
-        $table->setHeaderTitle($record['level_name']);
+        $table->setHeaderTitle($levelName);
         $table->setHeaders([new TableCell('General Info', ['colspan' => 3])]);
 
-        $table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record['datetime']->format($this->dateFormat), ['colspan' => 2])]);
-        $table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record['level_name'], ['colspan' => 2])]);
+        $table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record->datetime->format($this->dateFormat), ['colspan' => 2])]);
+        $table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($levelName, ['colspan' => 2])]);
 
         $output->writeln('');
 
@@ -179,11 +173,11 @@ final class StreamFormatter extends NormalizerFormatter
             $table->addRow(new TableSeparator());
 
             foreach ($vars[$element] as $key => $value) {
-                if (isset($record[$element][$key]) && $record[$element][$key] instanceof Throwable) {
-                    $exception = $record[$element][$key];
+                if (isset($record->{$element}[$key]) && $record->{$element}[$key] instanceof Throwable) {
+                    $exception = $record->{$element}[$key];
 
                     $value = [
-                        'Type' => get_class($exception),
+                        'Type' => $exception::class,
                         'Message' => $exception->getMessage(),
                         'Code' => $exception->getCode(),
                         'File' => $exception->getFile(),
@@ -198,7 +192,7 @@ final class StreamFormatter extends NormalizerFormatter
                     if ($prev instanceof Throwable) {
                         do {
                             $value = [
-                                'Type' => get_class($prev),
+                                'Type' => $prev::class,
                                 'Message' => $prev->getMessage(),
                                 'Code' => $prev->getCode(),
                                 'File' => $prev->getFile(),
@@ -228,7 +222,7 @@ final class StreamFormatter extends NormalizerFormatter
 
     /**
      * @param  array[] $records
-     * @phpstan-param Record[] $records
+     * @phpstan-param LogRecord[] $records
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */
