@@ -15,7 +15,6 @@ namespace Mimmi20\Monolog\Formatter;
 use DateTimeImmutable;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
-use Monolog\Logger;
 use Monolog\LogRecord;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
@@ -27,7 +26,6 @@ use Throwable;
 
 use function array_keys;
 use function count;
-use function get_class;
 use function is_array;
 use function is_bool;
 use function is_iterable;
@@ -179,7 +177,7 @@ final class StreamFormatter extends NormalizerFormatter
                     $exception = $record->{$element}[$key];
 
                     $value = [
-                        'Type' => get_class($exception),
+                        'Type' => $exception::class,
                         'Message' => $exception->getMessage(),
                         'Code' => $exception->getCode(),
                         'File' => $exception->getFile(),
@@ -194,7 +192,7 @@ final class StreamFormatter extends NormalizerFormatter
                     if ($prev instanceof Throwable) {
                         do {
                             $value = [
-                                'Type' => get_class($prev),
+                                'Type' => $prev::class,
                                 'Message' => $prev->getMessage(),
                                 'Code' => $prev->getCode(),
                                 'File' => $prev->getFile(),

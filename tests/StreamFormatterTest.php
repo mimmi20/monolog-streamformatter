@@ -15,7 +15,7 @@ namespace Mimmi20Test\Monolog\Formatter;
 use DateTimeImmutable;
 use Mimmi20\Monolog\Formatter\StreamFormatter;
 use Monolog\Formatter\NormalizerFormatter;
-use Monolog\Logger;
+use Monolog\Level;
 use Monolog\LogRecord;
 use OutOfRangeException;
 use PHPUnit\Framework\Exception;
@@ -29,9 +29,9 @@ use UnexpectedValueException;
 use function array_map;
 use function count;
 use function explode;
-use function get_class;
 use function implode;
 use function str_pad;
+use function str_replace;
 
 use const PHP_EOL;
 
@@ -241,7 +241,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: [],
             extra: [],
@@ -282,7 +282,7 @@ test message
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -335,7 +335,7 @@ test message
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -383,7 +383,7 @@ test message true test-app
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -430,7 +430,7 @@ test message ["abc","xyz"] test-app
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -479,7 +479,7 @@ test message test test test-app
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -536,7 +536,7 @@ test test-app
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception],
@@ -594,7 +594,7 @@ test <{"class":"RuntimeException","message":"error","code":0,"file":"' . $except
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception],
@@ -667,7 +667,7 @@ test test-app
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception3],
@@ -689,7 +689,7 @@ test test-app
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Extra                                                                                                                                                                                                                                                                      |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|            Exception | Type                 | ' . str_pad(get_class($exception3), 220) . ' |
+|            Exception | Type                 | ' . str_pad($exception3::class, 220) . ' |
 |                      | Message              | ' . str_pad($exception3->getMessage(), 220) . ' |
 |                      | Code                 | ' . str_pad((string) $exception3->getCode(), 220) . ' |
 |                      | File                 | ' . str_pad($exception3->getFile(), 220) . ' |
@@ -701,7 +701,7 @@ test test-app
 ';
         }
 
-        $expected .= '|   previous Throwable | Type                 | ' . str_pad(get_class($exception2), 220) . ' |
+        $expected .= '|   previous Throwable | Type                 | ' . str_pad($exception2::class, 220) . ' |
 |                      | Message              | ' . str_pad($exception2->getMessage(), 220) . ' |
 |                      | Code                 | ' . str_pad((string) $exception2->getCode(), 220) . ' |
 |                      | File                 | ' . str_pad($exception2->getFile(), 220) . ' |
@@ -713,7 +713,7 @@ test test-app
 ';
         }
 
-        $expected .= '|   previous Throwable | Type                 | ' . str_pad(get_class($exception1), 220) . ' |
+        $expected .= '|   previous Throwable | Type                 | ' . str_pad($exception1::class, 220) . ' |
 |                      | Message              | ' . str_pad($exception1->getMessage(), 220) . ' |
 |                      | Code                 | ' . str_pad((string) $exception1->getCode(), 220) . ' |
 |                      | File                 | ' . str_pad($exception1->getFile(), 220) . ' |
@@ -754,7 +754,7 @@ test test-app
         $record1 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: [],
             extra: [],
@@ -762,7 +762,7 @@ test test-app
         $record2 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -770,7 +770,7 @@ test test-app
         $record3 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: \Monolog\Level::Error,
+            level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
