@@ -225,6 +225,7 @@ jobs:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_PHP_PSALM: false
+          VALIDATE_JSCPD: false
 
   php-cs-fixer:
     name: "Check Coding Standards with PHP-CS-Fixer"
