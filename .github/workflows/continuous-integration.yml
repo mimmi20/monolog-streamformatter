@@ -120,7 +120,7 @@ jobs:
         run: "composer outdated --direct"
 
   lint:
-    name: "Linting"
+    name: "Linting with Mega-Linter"
 
     needs: "install"
 
@@ -170,6 +170,61 @@ jobs:
         uses: "nvuillam/mega-linter/flavors/php@v5"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint2:
+    name: "Linting with Super-Linter"
+
+    needs: "install"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+          - "ubuntu-22.04"
+
+        php-version:
+          - "8.1"
+
+        dependencies:
+          - "highest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.19.1"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "${{ env.TOOLS }}"
+
+      - name: "Update dependencies with composer"
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "${{ env.COMPOSER_OPTIONS }}"
+
+      - name: "Linter"
+        # You can override Mega-Linter flavor used to have faster performances
+        # More info at https://nvuillam.github.io/mega-linter/flavors/
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_PHP_PSALM: false
 
   php-cs-fixer:
     name: "Check Coding Standards with PHP-CS-Fixer"
