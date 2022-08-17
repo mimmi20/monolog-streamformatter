@@ -76,23 +76,30 @@ jobs:
 
         experimental: [false]
 
+        composer-options:
+          - ""
+
         include:
           - operating-system: "ubuntu-20.04"
             php-version: "8.2"
             dependencies: "highest"
             experimental: true
+            composer-options: " --ignore-platform-reqs"
           - operating-system: "ubuntu-20.04"
             php-version: "8.2"
             dependencies: "lowest"
             experimental: true
+            composer-options: " --ignore-platform-reqs"
           - operating-system: "ubuntu-22.04"
             php-version: "8.2"
             dependencies: "highest"
             experimental: true
+            composer-options: " --ignore-platform-reqs"
           - operating-system: "ubuntu-22.04"
             php-version: "8.2"
             dependencies: "lowest"
             experimental: true
+            composer-options: " --ignore-platform-reqs"
 
     steps:
       - name: "Checkout"
@@ -114,13 +121,13 @@ jobs:
         uses: "ramsey/composer-install@v1"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }}"
+          composer-options: "${{ env.COMPOSER_OPTIONS }}${{ matrix.composer-options }}"
 
       - name: "Check dependencies with composer"
         run: "composer outdated --direct"
 
-  lint:
-    name: "Linting"
+  mega-lint:
+    name: "Linting with nvuillam/mega-linter"
 
     needs: "install"
 
@@ -171,10 +178,51 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  php-lint:
+    name: "Linting with overtrue/phplint"
+
+    needs: "install"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+          - "ubuntu-22.04"
+
+        php-version:
+          - "8.1"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.21.1"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "${{ env.TOOLS }}"
+
+      - name: "Lint PHP"
+        uses: "overtrue/phplint@8.1"
+
   php-cs-fixer:
     name: "Check Coding Standards with PHP-CS-Fixer"
 
-    needs: "lint"
+    needs:
+      - "mega-lint"
+      - "php-lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -222,7 +270,9 @@ jobs:
   phpcs:
     name: "Check Coding Standards with PHPCS"
 
-    needs: "lint"
+    needs:
+      - "mega-lint"
+      - "php-lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -270,7 +320,9 @@ jobs:
   static-code-analysis:
     name: "Static Code Analysis with PHPStan"
 
-    needs: "lint"
+    needs:
+      - "mega-lint"
+      - "php-lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -316,7 +368,9 @@ jobs:
   tests:
     name: "UnitTests with PHPUnit"
 
-    needs: "lint"
+    needs:
+      - "mega-lint"
+      - "php-lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -360,7 +414,7 @@ jobs:
           composer-options: "${{ env.COMPOSER_OPTIONS }}"
 
       - name: "Run unit tests with phpunit/phpunit"
-        run: "vendor/bin/phpunit -c phpunit.xml --verbose --no-coverage"
+        run: "vendor/bin/phpunit -c phpunit.xml --no-coverage"
 
   code-coverage:
     name: "Code Coverage with PHPUnit"
