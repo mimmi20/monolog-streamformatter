@@ -44,7 +44,6 @@ final class StreamFormatter extends NormalizerFormatter
     public const BOX_STYLE     = 'box';
 
     private string $format;
-    private string $tableStyle;
     private bool $allowInlineLineBreaks;
     private bool $includeStacktraces;
 
@@ -55,19 +54,16 @@ final class StreamFormatter extends NormalizerFormatter
      *
      * @throws void
      */
-    public function __construct(?string $format = null, string $tableStyle = self::BOX_STYLE, ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
+    public function __construct(string|null $format = null, private string $tableStyle = self::BOX_STYLE, string|null $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
     {
-        $this->format     = $format ?? self::SIMPLE_FORMAT;
-        $this->tableStyle = $tableStyle;
+        $this->format = $format ?? self::SIMPLE_FORMAT;
         $this->allowInlineLineBreaks($allowInlineLineBreaks);
         $this->includeStacktraces($includeStacktraces);
 
         parent::__construct($dateFormat);
     }
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     public function includeStacktraces(bool $include = true): self
     {
         $this->includeStacktraces = $include;
@@ -79,9 +75,7 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     public function allowInlineLineBreaks(bool $allow = true): self
     {
         $this->allowInlineLineBreaks = $allow;
@@ -264,9 +258,7 @@ final class StreamFormatter extends NormalizerFormatter
         return $this->toJson($data, true);
     }
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
