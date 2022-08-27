@@ -528,7 +528,7 @@ test test-app
 
         $formattedTrace = array_map(
             static fn (array $entry): string => ($entry['file'] ?? '') . ':' . ($entry['line'] ?? ''),
-            $exception->getTrace()
+            $exception->getTrace(),
         );
 
         $formatter = new StreamFormatter('%message% %context.five% <%extra.Exception%>', 'default', null, true);
