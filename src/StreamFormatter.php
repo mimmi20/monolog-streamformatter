@@ -54,7 +54,7 @@ final class StreamFormatter extends NormalizerFormatter
      *
      * @throws void
      */
-    public function __construct(string|null $format = null, private string $tableStyle = self::BOX_STYLE, string|null $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
+    public function __construct(string | null $format = null, private string $tableStyle = self::BOX_STYLE, string | null $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
     {
         $this->format = $format ?? self::SIMPLE_FORMAT;
         $this->allowInlineLineBreaks($allowInlineLineBreaks);
