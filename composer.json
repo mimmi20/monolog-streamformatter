@@ -23,7 +23,7 @@
   },
   "require-dev": {
     "ext-json": "*",
-    "mimmi20/coding-standard": "^3.0.9",
+    "mimmi20/coding-standard": "^3.0.10",
     "phpstan/extension-installer": "^1.1.0",
     "phpstan/phpstan": "^1.8.3",
     "phpstan/phpstan-deprecation-rules": "^1.0.0",
