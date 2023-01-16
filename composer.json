@@ -29,6 +29,7 @@
     "ext-xml": "*",
     "ext-xmlwriter": "*",
     "mimmi20/coding-standard": "^3.0.26",
+    "nikic/php-parser": "^v4.15.2",
     "phpstan/extension-installer": "^1.2.0",
     "phpstan/phpstan": "^1.9.11",
     "phpstan/phpstan-deprecation-rules": "^1.1.1",
