@@ -19,7 +19,7 @@
     "php": "^8.1.0",
     "ext-mbstring": "*",
     "monolog/monolog": "^3.2.0",
-    "symfony/console": "^v6.2.3"
+    "symfony/console": "^v6.2.5"
   },
   "require-dev": {
     "ext-dom": "*",
