@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/monolog-streamformatter package.
  *
- * Copyright (c) 2022, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2022-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Mimmi20\Monolog\Formatter;
 
 use DateTimeImmutable;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
@@ -46,6 +47,7 @@ final class StreamFormatter extends NormalizerFormatter
     private string $format;
     private bool $allowInlineLineBreaks;
     private bool $includeStacktraces;
+    private LineFormatter | null $formatter = null;
 
     /**
      * @param string|null $format                The format of the message
@@ -83,6 +85,11 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
+    public function setFormatter(LineFormatter $formatter): void
+    {
+        $this->formatter = $formatter;
+    }
+
     /**
      * Formats a log record.
      *
@@ -96,51 +103,14 @@ final class StreamFormatter extends NormalizerFormatter
         /** @phpstan-var array{message: string, context: mixed[], level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: mixed[]} $vars */
         $vars = $this->normalizeRecord($record);
 
-        $message = $this->format;
-
-        foreach ($vars['extra'] as $var => $val) {
-            if (false === mb_strpos($message, '%extra.' . $var . '%')) {
-                continue;
-            }
-
-            $message = str_replace('%extra.' . $var . '%', $this->stringify($val), $message);
-            unset($vars['extra'][$var]);
-        }
-
-        foreach ($vars['context'] as $var => $val) {
-            if (false === mb_strpos($message, '%context.' . $var . '%')) {
-                continue;
-            }
-
-            $message = str_replace('%context.' . $var . '%', $this->stringify($val), $message);
-            unset($vars['context'][$var]);
-        }
-
-        if (empty($vars['context'])) {
-            unset($vars['context']);
-            $message = str_replace('%context%', '', $message);
-        }
-
-        if (empty($vars['extra'])) {
-            unset($vars['extra']);
-            $message = str_replace('%extra%', '', $message);
-        }
-
-        foreach ($vars as $var => $val) {
-            if (false === mb_strpos($message, '%' . $var . '%')) {
-                continue;
-            }
-
-            $message = str_replace('%' . $var . '%', $this->stringify($val), $message);
-            unset($vars[$var]);
-        }
+        $message = $this->getFormatter()->format($record);
 
         $levelName = Level::fromValue($record->level->value)->getName();
 
         $output = new BufferedOutput();
         $output->writeln(str_repeat('=', 220));
         $output->writeln('');
-        $output->writeln($message);
+        $output->writeln(trim($message));
         $output->writeln('');
 
         $table = new Table($output);
@@ -230,22 +200,29 @@ final class StreamFormatter extends NormalizerFormatter
         return $message;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function stringify($value): string
+    private function getFormatter(): LineFormatter
+    {
+        if (null === $this->formatter) {
+            $this->formatter = new LineFormatter(
+                $this->format,
+                $this->dateFormat,
+                $this->allowInlineLineBreaks,
+                true,
+                $this->includeStacktraces,
+            );
+        }
+
+        return $this->formatter;
+    }
+
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function stringify(mixed $value): string
     {
         return $this->replaceNewlines($this->convertToString($value));
     }
 
-    /**
-     * @param mixed $data
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function convertToString($data): string
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function convertToString(mixed $data): string
     {
         if (null === $data || is_bool($data)) {
             return var_export($data, true);
@@ -272,12 +249,8 @@ final class StreamFormatter extends NormalizerFormatter
         return str_replace(["\r\n", "\r", "\n"], ' ', $str);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function addFact(Table $table, string $name, $value): void
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function addFact(Table $table, string $name, mixed $value): void
     {
         $name = trim(str_replace('_', ' ', $name));
 
@@ -285,10 +258,16 @@ final class StreamFormatter extends NormalizerFormatter
             $rowspan = count($value);
 
             foreach (array_keys($value) as $number => $key) {
+                $cellValue = $value[$key];
+
+                if (!is_string($cellValue)) {
+                    $cellValue = $this->stringify($cellValue);
+                }
+
                 if (0 === $number) {
-                    $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), $key, $value[$key]]);
+                    $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), new TableCell((string) $key), new TableCell($cellValue)]);
                 } else {
-                    $table->addRow([$key, $value[$key]]);
+                    $table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
                 }
             }
 
