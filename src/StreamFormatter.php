@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/monolog-streamformatter package.
  *
- * Copyright (c) 2022, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2022-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -230,22 +230,14 @@ final class StreamFormatter extends NormalizerFormatter
         return $message;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function stringify($value): string
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function stringify(mixed $value): string
     {
         return $this->replaceNewlines($this->convertToString($value));
     }
 
-    /**
-     * @param mixed $data
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function convertToString($data): string
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function convertToString(mixed $data): string
     {
         if (null === $data || is_bool($data)) {
             return var_export($data, true);
@@ -272,12 +264,8 @@ final class StreamFormatter extends NormalizerFormatter
         return str_replace(["\r\n", "\r", "\n"], ' ', $str);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws RuntimeException if encoding fails and errors are not ignored
-     */
-    private function addFact(Table $table, string $name, $value): void
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function addFact(Table $table, string $name, mixed $value): void
     {
         $name = trim(str_replace('_', ' ', $name));
 
@@ -285,10 +273,16 @@ final class StreamFormatter extends NormalizerFormatter
             $rowspan = count($value);
 
             foreach (array_keys($value) as $number => $key) {
+                $cellValue = $value[$key];
+
+                if (!is_string($cellValue)) {
+                    $cellValue = $this->stringify($cellValue);
+                }
+
                 if (0 === $number) {
-                    $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), $key, $value[$key]]);
+                    $table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), new TableCell((string) $key), new TableCell($cellValue)]);
                 } else {
-                    $table->addRow([$key, $value[$key]]);
+                    $table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
                 }
             }
 
