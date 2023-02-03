@@ -745,6 +745,103 @@ test test-app
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
+    public function testFormat10(): void
+    {
+        $message  = 'test message';
+        $channel  = 'test-channel';
+        $datetime = new DateTimeImmutable('now');
+
+        $exception1 = new RuntimeException('error');
+        $exception2 = new UnexpectedValueException('error', 4711, $exception1);
+        $exception3 = new OutOfRangeException('error', 1234, $exception2);
+
+        $trace1 = explode(PHP_EOL, $exception1->getTraceAsString());
+        $trace2 = explode(PHP_EOL, $exception2->getTraceAsString());
+        $trace3 = explode(PHP_EOL, $exception3->getTraceAsString());
+
+        $formatter = new StreamFormatter('%message% context.one %context.five% %extra.app% extra.Exception', 'default', null, true);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app', 'Exception' => $exception3],
+        );
+
+        $formatted = $formatter->format($record);
+
+        $expected = '============================================================================================================================================================================================================================
+
+test message context.one test
+test test-app extra.Exception
+
+
++----------------------+----------------------+------------------------------------------------------------------------------------ ERROR -----------------------------------------------------------------------------------------------------------------------------------+
+| General Info                                                                                                                                                                                                                                                               |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                Level | ERROR                                                                                                                                                                                                                                               |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Extra                                                                                                                                                                                                                                                                      |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|            Exception | Type                 | ' . str_pad($exception3::class, 220) . ' |
+|                      | Message              | ' . str_pad($exception3->getMessage(), 220) . ' |
+|                      | Code                 | ' . str_pad((string) $exception3->getCode(), 220) . ' |
+|                      | File                 | ' . str_pad($exception3->getFile(), 220) . ' |
+|                      | Line                 | ' . str_pad((string) $exception3->getLine(), 220) . ' |
+|                      | Trace                | ' . str_pad($trace3[0], 220) . ' |
+';
+        for ($i = 1, $count = count($trace3); $i < $count; ++$i) {
+            $expected .= '|                      |                      | ' . str_pad($trace3[$i], 220) . ' |
+';
+        }
+
+        $expected .= '|   previous Throwable | Type                 | ' . str_pad($exception2::class, 220) . ' |
+|                      | Message              | ' . str_pad($exception2->getMessage(), 220) . ' |
+|                      | Code                 | ' . str_pad((string) $exception2->getCode(), 220) . ' |
+|                      | File                 | ' . str_pad($exception2->getFile(), 220) . ' |
+|                      | Line                 | ' . str_pad((string) $exception2->getLine(), 220) . ' |
+|                      | Trace                | ' . str_pad($trace2[0], 220) . ' |
+';
+        for ($i = 1, $count = count($trace2); $i < $count; ++$i) {
+            $expected .= '|                      |                      | ' . str_pad($trace2[$i], 220) . ' |
+';
+        }
+
+        $expected .= '|   previous Throwable | Type                 | ' . str_pad($exception1::class, 220) . ' |
+|                      | Message              | ' . str_pad($exception1->getMessage(), 220) . ' |
+|                      | Code                 | ' . str_pad((string) $exception1->getCode(), 220) . ' |
+|                      | File                 | ' . str_pad($exception1->getFile(), 220) . ' |
+|                      | Line                 | ' . str_pad((string) $exception1->getLine(), 220) . ' |
+|                      | Trace                | ' . str_pad($trace1[0], 220) . ' |
+';
+        for ($i = 1, $count = count($trace1); $i < $count; ++$i) {
+            $expected .= '|                      |                      | ' . str_pad($trace1[$i], 220) . ' |
+';
+        }
+
+        $expected .= '+----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Context                                                                                                                                                                                                                                                                    |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                  one | NULL                                                                                                                                                                                                                                                |
+|                  two | true                                                                                                                                                                                                                                                |
+|                three | false                                                                                                                                                                                                                                               |
+|                 four | 0                    | abc                                                                                                                                                                                                                          |
+|                      | 1                    | xyz                                                                                                                                                                                                                          |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+';
+
+        self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
     public function testFormatBatch(): void
     {
         $message  = 'test message';
