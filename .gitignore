@@ -24,3 +24,4 @@ tests/temp/*.ini
 infection-*.log
 rewrite*.php
 .reports/
+*.txt
