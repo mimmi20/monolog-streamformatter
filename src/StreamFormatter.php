@@ -200,9 +200,7 @@ final class StreamFormatter extends NormalizerFormatter
         return $message;
     }
 
-    /**
-     * @throws RuntimeException
-     */
+    /** @throws RuntimeException */
     private function getFormatter(): LineFormatter
     {
         if (null === $this->formatter) {
