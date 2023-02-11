@@ -39,6 +39,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function testConstructWithDefaults(): void
     {
@@ -68,6 +69,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function testConstructWithValues(): void
     {
@@ -101,6 +103,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function testConstructWithValues2(): void
     {
@@ -134,6 +137,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function testConstructWithValues3(): void
     {
@@ -173,6 +177,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function testConstructWithValues4(): void
     {
