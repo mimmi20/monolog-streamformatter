@@ -54,7 +54,7 @@ final class StreamFormatter extends NormalizerFormatter
      * @param string|null $dateFormat            The format of the timestamp: one supported by DateTime::format
      * @param bool        $allowInlineLineBreaks Whether to allow inline line breaks in log entries
      *
-     * @throws void
+     * @throws RuntimeException
      */
     public function __construct(string | null $format = null, private string $tableStyle = self::BOX_STYLE, string | null $dateFormat = null, bool $allowInlineLineBreaks = false, bool $includeStacktraces = false)
     {

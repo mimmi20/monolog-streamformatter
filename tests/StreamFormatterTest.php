@@ -24,7 +24,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionProperty;
 use RuntimeException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use stdClass;
 use UnexpectedValueException;
 
@@ -39,7 +38,6 @@ final class StreamFormatterTest extends TestCase
 {
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function testConstructWithDefaults(): void
@@ -69,7 +67,6 @@ final class StreamFormatterTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function testConstructWithValues(): void
@@ -103,7 +100,6 @@ final class StreamFormatterTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function testConstructWithValues2(): void
@@ -137,7 +133,6 @@ final class StreamFormatterTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function testConstructWithValues3(): void
@@ -177,7 +172,6 @@ final class StreamFormatterTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function testConstructWithValues4(): void
@@ -227,7 +221,6 @@ final class StreamFormatterTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat(): void
@@ -268,7 +261,6 @@ test message
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat2(): void
@@ -321,7 +313,6 @@ test message
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat3(): void
@@ -374,7 +365,6 @@ test message true test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat4(): void
@@ -427,7 +417,6 @@ test message ["abc","xyz"] test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat5(): void
@@ -482,7 +471,6 @@ test message test test test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat6(): void
@@ -538,7 +526,6 @@ test test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat7(): void
@@ -608,7 +595,6 @@ test <[object] (RuntimeException(code: ' . $exception->getCode() . '): error at 
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat8(): void
@@ -680,7 +666,6 @@ test test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat9(): void
@@ -780,7 +765,6 @@ test test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat10(): void
@@ -880,7 +864,6 @@ test test-app extra.Exception
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat11(): void
@@ -932,7 +915,6 @@ test  test-app test-app
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormat12(): void
@@ -998,7 +980,6 @@ this is a formatted message
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     public function testFormatBatch(): void
