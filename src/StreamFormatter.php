@@ -44,6 +44,13 @@ final class StreamFormatter extends NormalizerFormatter
     public const SIMPLE_FORMAT = '%message%';
     public const BOX_STYLE     = 'box';
 
+    public const WIDTH_FIRST_COLUMN  = 20;
+    public const WIDTH_SECOND_COLUMN = 20;
+    public const WIDTH_THIRD_COLUMN  = 220;
+    public const FULL_WIDTH          = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
+    public const SPAN_ALL_COLUMS     = 3;
+    public const SPAN_LAST_COLUMNS   = 2;
+
     private string $format;
     private bool $allowInlineLineBreaks;
     private bool $includeStacktraces;
@@ -72,10 +79,10 @@ final class StreamFormatter extends NormalizerFormatter
         parent::__construct($dateFormat);
 
         $this->table->setStyle($this->tableStyle);
-        $this->table->setColumnMaxWidth(0, 20);
-        $this->table->setColumnMaxWidth(1, 20);
-        $this->table->setColumnMaxWidth(2, 220);
-        $this->table->setColumnWidths([20, 20, 220]);
+        $this->table->setColumnMaxWidth(0, self::WIDTH_FIRST_COLUMN);
+        $this->table->setColumnMaxWidth(1, self::WIDTH_SECOND_COLUMN);
+        $this->table->setColumnMaxWidth(2, self::WIDTH_THIRD_COLUMN);
+        $this->table->setColumnWidths([self::WIDTH_FIRST_COLUMN, self::WIDTH_SECOND_COLUMN, self::WIDTH_THIRD_COLUMN]);
     }
 
     /** @throws void */
@@ -124,15 +131,15 @@ final class StreamFormatter extends NormalizerFormatter
         $this->output->fetch();
         $this->table->setRows([]);
 
-        $this->output->writeln(str_repeat('=', 220));
+        $this->output->writeln(str_repeat('=', self::FULL_WIDTH));
         $this->output->writeln('');
         $this->output->writeln(trim($message));
         $this->output->writeln('');
 
-        $this->table->addRow([new TableCell('General Info', ['colspan' => 3])]);
+        $this->table->addRow([new TableCell('General Info', ['colspan' => self::SPAN_ALL_COLUMS])]);
 
-        $this->table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record->datetime->format($this->dateFormat), ['colspan' => 2])]);
-        $this->table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($levelName, ['colspan' => 2])]);
+        $this->table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record->datetime->format($this->dateFormat), ['colspan' => self::SPAN_LAST_COLUMNS])]);
+        $this->table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($levelName, ['colspan' => self::SPAN_LAST_COLUMNS])]);
 
         foreach (['extra', 'context'] as $element) {
             if (empty($vars[$element]) || !is_iterable($vars[$element])) {
@@ -140,7 +147,7 @@ final class StreamFormatter extends NormalizerFormatter
             }
 
             $this->table->addRow(new TableSeparator());
-            $this->table->addRow([new TableCell(ucfirst($element), ['colspan' => 3])]);
+            $this->table->addRow([new TableCell(ucfirst($element), ['colspan' => self::SPAN_ALL_COLUMS])]);
             $this->table->addRow(new TableSeparator());
 
             foreach ($vars[$element] as $key => $value) {
@@ -287,6 +294,6 @@ final class StreamFormatter extends NormalizerFormatter
             $value = $this->stringify($value);
         }
 
-        $this->table->addRow([new TableCell($name, ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($value, ['colspan' => 2])]);
+        $this->table->addRow([new TableCell($name, ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($value, ['colspan' => self::SPAN_LAST_COLUMNS])]);
     }
 }

@@ -31,6 +31,7 @@ use Symfony\Component\Console\Output\Output;
 use UnexpectedValueException;
 
 use function explode;
+use function file_put_contents;
 use function str_repeat;
 use function str_replace;
 
@@ -65,7 +66,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -128,7 +129,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -191,7 +192,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -254,7 +255,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -323,7 +324,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -391,9 +392,10 @@ final class StreamFormatterTest extends TestCase
             ->willReturnOnConsecutiveCalls('', $expected);
         $output->expects(self::exactly(5))
             ->method('writeln')
+            ->with()
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -411,7 +413,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -478,7 +480,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -545,7 +547,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -612,7 +614,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -680,7 +682,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -748,7 +750,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -818,7 +820,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -872,7 +874,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -890,7 +892,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -948,7 +950,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -966,7 +968,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1024,7 +1026,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -1042,7 +1044,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1092,7 +1094,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -1110,7 +1112,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1164,7 +1166,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -1182,7 +1184,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1217,6 +1219,76 @@ final class StreamFormatterTest extends TestCase
         $formatted = $formatter->format($record);
 
         self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormat13(): void
+    {
+        $message          = 'test message';
+        $channel          = 'test-channel';
+        $tableStyle       = 'default';
+        $datetime         = new DateTimeImmutable('now');
+        $formattedMessage = 'this is a formatted message';
+        $stdClass         = new stdClass();
+        $stdClass->a      = $channel;
+        $stdClass->b      = $message;
+
+        $expected = '==============================================================================================================================================================================================================================================================================
+
+this is a formatted message
+
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| General Info                                                                                                                                                                                                                                                               |
+|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                Level | ERROR                                                                                                                                                                                                                                               |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Extra                                                                                                                                                                                                                                                                      |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                  app | test-app                                                                                                                                                                                                                                            |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Context                                                                                                                                                                                                                                                                    |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                  one | NULL                                                                                                                                                                                                                                                |
+|                 five | test                                                                                                                                                                                                                                                |
+|                      | test                                                                                                                                                                                                                                                |
+|                  six | stdClass             | {"a":"test-channel","b":"test message"}                                                                                                                                                                                      |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+';
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter($output, $table, '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%', $tableStyle, null, true);
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
+            extra: ['app' => 'test-app'],
+        );
+
+        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lineFormatter->expects(self::once())
+            ->method('format')
+            ->with($record)
+            ->willReturn($formattedMessage);
+
+        $formatter->setFormatter($lineFormatter);
+
+        $formatted = $formatter->format($record);
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $expected),
+            str_replace("\r\n", "\n", $formatted),
+        );
     }
 
     /**
@@ -1269,7 +1341,7 @@ final class StreamFormatterTest extends TestCase
             ->method('writeln')
             ->willReturnMap(
                 [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
+                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
                     ['', Output::OUTPUT_NORMAL, null],
                     [$message, Output::OUTPUT_NORMAL, null],
                 ],
@@ -1287,7 +1359,7 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([20, 20, 220])
+            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
             ->willReturnSelf();
         $table->expects(self::exactly(3))
             ->method('setRows')
@@ -1303,5 +1375,116 @@ final class StreamFormatterTest extends TestCase
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
         self::assertSame($expected1 . $expected2 . $expected3, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormatBatch2(): void
+    {
+        $message    = 'test message';
+        $channel    = 'test-channel';
+        $tableStyle = StreamFormatter::BOX_STYLE;
+        $datetime   = new DateTimeImmutable('now');
+
+        $expected1 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected2 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Extra                                                                                                                                                                                                                                                                      │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  app │ test-app                                                                                                                                                                                                                                            │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Context                                                                                                                                                                                                                                                                    │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  two │ true                                                                                                                                                                                                                                                │
+│                three │ false                                                                                                                                                                                                                                               │
+│                 four │ 0                    │ abc                                                                                                                                                                                                                          │
+│                      │ 1                    │ xyz                                                                                                                                                                                                                          │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected3 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Extra                                                                                                                                                                                                                                                                      │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  app │ test-app                                                                                                                                                                                                                                            │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Context                                                                                                                                                                                                                                                                    │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  two │ true                                                                                                                                                                                                                                                │
+│                three │ false                                                                                                                                                                                                                                               │
+│                 four │ 0                    │ abc                                                                                                                                                                                                                          │
+│                      │ 1                    │ xyz                                                                                                                                                                                                                          │
+│                 five │ test                                                                                                                                                                                                                                                │
+│                      │ test                                                                                                                                                                                                                                                │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+
+        $record1 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: [],
+            extra: [],
+        );
+        $record2 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: ['app' => 'test-app'],
+        );
+        $record3 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app'],
+        );
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+
+        $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
+
+        file_put_contents('output.txt', $formatted);
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $expected1 . $expected2 . $expected3),
+            str_replace("\r\n", "\n", $formatted),
+        );
     }
 }
