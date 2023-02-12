@@ -22,4 +22,4 @@ parameters:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
 #  ignoreErrors:
-#    - '~MockObject~'
+#    - '~is not subtype of Throwable~'
