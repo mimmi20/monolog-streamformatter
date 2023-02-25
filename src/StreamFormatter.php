@@ -42,14 +42,20 @@ use function var_export;
 final class StreamFormatter extends NormalizerFormatter
 {
     public const SIMPLE_FORMAT = '%message%';
-    public const BOX_STYLE     = 'box';
 
-    public const WIDTH_FIRST_COLUMN  = 20;
+    public const BOX_STYLE = 'box';
+
+    public const WIDTH_FIRST_COLUMN = 20;
+
     public const WIDTH_SECOND_COLUMN = 20;
-    public const WIDTH_THIRD_COLUMN  = 220;
-    public const FULL_WIDTH          = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
-    public const SPAN_ALL_COLUMS     = 3;
-    public const SPAN_LAST_COLUMNS   = 2;
+
+    public const WIDTH_THIRD_COLUMN = 220;
+
+    public const FULL_WIDTH = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
+
+    public const SPAN_ALL_COLUMS = 3;
+
+    public const SPAN_LAST_COLUMNS = 2;
 
     private string $format;
     private bool $allowInlineLineBreaks;
@@ -105,6 +111,7 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
+    /** @throws void */
     public function setFormatter(LineFormatter $formatter): void
     {
         $this->formatter = $formatter;
@@ -120,7 +127,7 @@ final class StreamFormatter extends NormalizerFormatter
     public function format(LogRecord $record): string
     {
         /** @var scalar|array<(array|scalar|null)>|null $vars */
-        /** @phpstan-var array{message: string, context: mixed[], level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: mixed[]} $vars */
+        /** @phpstan-var array{message: string, context: array<mixed>, level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: array<mixed>} $vars */
         $vars = $this->normalizeRecord($record);
 
         $message = $this->getFormatter()->format($record);
@@ -151,7 +158,11 @@ final class StreamFormatter extends NormalizerFormatter
             $this->table->addRow(new TableSeparator());
 
             foreach ($vars[$element] as $key => $value) {
-                if (isset($record->{$element}[$key]) && $record->{$element}[$key] instanceof Throwable) {
+                if (!is_string($key)) {
+                    continue;
+                }
+
+                if (is_array($record->{$element}) && isset($record->{$element}[$key]) && $record->{$element}[$key] instanceof Throwable) {
                     $exception = $record->{$element}[$key];
 
                     $value = [
@@ -199,8 +210,8 @@ final class StreamFormatter extends NormalizerFormatter
     }
 
     /**
-     * @param  array[] $records
-     * @phpstan-param LogRecord[] $records
+     * @param array<array> $records
+     * @phpstan-param array<LogRecord> $records
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */

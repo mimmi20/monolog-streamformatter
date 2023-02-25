@@ -1,18 +1,45 @@
 parameters:
   level: max
+
   parallel:
     maximumNumberOfProcesses: 1
     processTimeout: 200.0
+
   paths:
     - src
     - tests
+
   scanFiles:
     - %currentWorkingDirectory%/vendor/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src/Util/Tokens.php
+
+  checkAlwaysTrueCheckTypeFunctionCall: true
+  checkAlwaysTrueInstanceof: true
+  checkAlwaysTrueStrictComparison: true
+  checkBenevolentUnionTypes: true
+  checkDynamicProperties: true
+  checkExplicitMixedMissingReturn: true
+  checkFunctionNameCase: true
   checkGenericClassInNonGenericObjectType: false
-  checkMissingIterableValueType: false
+  checkImplicitMixed: true
+  checkInternalClassCaseSensitivity: true
+  checkMissingCallableSignature: true
+  checkMissingIterableValueType: true
+  checkTooWideReturnTypesInProtectedAndPublicMethods: true
+  checkUninitializedProperties: true
+  inferPrivatePropertyTypeFromConstructor: true
+  polluteScopeWithAlwaysIterableForeach: false
+  polluteScopeWithLoopInitialAssignments: false
+# reportAlwaysTrueInLastCondition: true
+  reportMaybesInMethodSignatures: false
+  reportMaybesInPropertyPhpDocTypes: true
+  reportStaticMethodSignatures: true
+# reportWrongPhpDocTypeInVarTag: true
   treatPhpDocTypesAsCertain: false
+
+  tipsOfTheDay: false
+
   exceptions:
     implicitThrows: false
     checkedExceptionRegexes:
@@ -21,5 +48,7 @@ parameters:
     check:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
-#  ignoreErrors:
+
+  ignoreErrors:
 #    - '~is not subtype of Throwable~'
+    - '~Call to static method PHPUnit\\Framework\\Assert::assert.*\(\) with .* will always evaluate to true~'
