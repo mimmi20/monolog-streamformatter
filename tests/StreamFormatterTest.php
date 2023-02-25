@@ -30,12 +30,9 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\Output;
 use UnexpectedValueException;
 
-use function explode;
 use function file_put_contents;
 use function str_repeat;
 use function str_replace;
-
-use const PHP_EOL;
 
 final class StreamFormatterTest extends TestCase
 {
@@ -788,7 +785,6 @@ final class StreamFormatterTest extends TestCase
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
         $exception  = new RuntimeException('error');
-        $trace      = explode(PHP_EOL, $exception->getTraceAsString());
 
         $expected = 'rendered-content';
 
@@ -859,8 +855,6 @@ final class StreamFormatterTest extends TestCase
         $datetime   = new DateTimeImmutable('now');
 
         $exception = new RuntimeException('error');
-
-        $trace = explode(PHP_EOL, $exception->getTraceAsString());
 
         $expected = 'rendered-content';
 
@@ -936,10 +930,6 @@ final class StreamFormatterTest extends TestCase
         $exception2 = new UnexpectedValueException('error', 4711, $exception1);
         $exception3 = new OutOfRangeException('error', 1234, $exception2);
 
-        $trace1 = explode(PHP_EOL, $exception1->getTraceAsString());
-        $trace2 = explode(PHP_EOL, $exception2->getTraceAsString());
-        $trace3 = explode(PHP_EOL, $exception3->getTraceAsString());
-
         $output = $this->getMockBuilder(BufferedOutput::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1011,10 +1001,6 @@ final class StreamFormatterTest extends TestCase
         $exception3 = new OutOfRangeException('error', 1234, $exception2);
 
         $expected = 'rendered-content';
-
-        $trace1 = explode("\n", str_replace("\r\n", "\n", $exception1->getTraceAsString()));
-        $trace2 = explode("\n", str_replace("\r\n", "\n", $exception2->getTraceAsString()));
-        $trace3 = explode("\n", str_replace("\r\n", "\n", $exception3->getTraceAsString()));
 
         $output = $this->getMockBuilder(BufferedOutput::class)
             ->disableOriginalConstructor()

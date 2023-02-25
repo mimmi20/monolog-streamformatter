@@ -42,8 +42,8 @@ return $config
                     'location' => 'after_open',
                     'separate' => 'bottom',
                 ],
-            ]
-        )
+            ],
+        ),
     )
     ->setUsingCache(true)
     ->setFinder($finder);

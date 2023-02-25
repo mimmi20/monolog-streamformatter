@@ -19,6 +19,8 @@ final class ConfigProvider
      *
      * @return array<string, array<string, array<string, string>>>
      * @phpstan-return array{monolog_formatters: array{aliases: array<string|class-string, class-string>, factories: array<class-string, class-string>}}
+     *
+     * @throws void
      */
     public function __invoke(): array
     {
@@ -30,6 +32,8 @@ final class ConfigProvider
     /**
      * @return array<string, array<int|string, string>>
      * @phpstan-return array{aliases: array<string|class-string, class-string>, factories: array<class-string, class-string>}
+     *
+     * @throws void
      */
     public function getMonologFormatterConfig(): array
     {
