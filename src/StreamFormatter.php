@@ -57,7 +57,7 @@ final class StreamFormatter extends NormalizerFormatter
 
     public const SPAN_LAST_COLUMNS = 2;
 
-    private string $format;
+    private readonly string $format;
     private bool $allowInlineLineBreaks;
     private bool $includeStacktraces;
     private LineFormatter | null $formatter = null;

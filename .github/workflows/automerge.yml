@@ -1,0 +1,37 @@
+name: "automerge"
+
+permissions:
+  pull-requests: write
+  contents: write
+
+on:
+  pull_request_target
+
+jobs:
+  show:
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: "show actor"
+        run: echo "${{ github.actor }}"
+
+  approve:
+    uses: "mimmi20/template/.github/workflows/auto-approve.yml@master"
+
+    if: ${{ github.actor == 'dependabot[bot]' }}
+
+    with:
+      pullRequestUrl: "${{ github.event.pull_request.html_url }}"
+
+    secrets:
+      envPAT: "${{ secrets.GITHUB_TOKEN }}"
+
+  automerge:
+    needs: "approve"
+
+    uses: "mimmi20/template/.github/workflows/auto-merge.yml@master"
+
+    with:
+      pullRequestUrl: "${{ github.event.pull_request.html_url }}"
+
+    secrets:
+      envPAT: "${{ secrets.GITHUB_TOKEN }}"
