@@ -8,16 +8,10 @@ on:
   pull_request_target
 
 jobs:
-  show:
-    runs-on: "ubuntu-22.04"
-    steps:
-      - name: "show actor"
-        run: echo "${{ github.actor }}"
-
   approve:
     uses: "mimmi20/template/.github/workflows/auto-approve.yml@master"
 
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' || github.actor == 'renovate[bot]' }}
 
     with:
       pullRequestUrl: "${{ github.event.pull_request.html_url }}"
