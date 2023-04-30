@@ -63,7 +63,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -126,7 +128,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -135,7 +139,15 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::never())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, $format, $tableStyle, $dateFormat, true, false);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            $format,
+            $tableStyle,
+            $dateFormat,
+            true,
+            false,
+        );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
         self::assertSame(9, $formatter->getMaxNormalizeDepth());
@@ -189,7 +201,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -198,7 +212,15 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::never())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, $format, $tableStyle, $dateFormat, false, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            $format,
+            $tableStyle,
+            $dateFormat,
+            false,
+            true,
+        );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
         self::assertSame(9, $formatter->getMaxNormalizeDepth());
@@ -252,7 +274,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -261,7 +285,15 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::never())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, $format, $tableStyle, $dateFormat, false, false);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            $format,
+            $tableStyle,
+            $dateFormat,
+            false,
+            false,
+        );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
         self::assertSame(9, $formatter->getMaxNormalizeDepth());
@@ -321,7 +353,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::never())
             ->method('setRows');
@@ -330,7 +364,15 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::never())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, $format, $tableStyle, $dateFormat, true, false);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            $format,
+            $tableStyle,
+            $dateFormat,
+            true,
+            false,
+        );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
         self::assertSame(9, $formatter->getMaxNormalizeDepth());
@@ -410,7 +452,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -477,7 +521,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -544,7 +590,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -611,7 +659,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -679,7 +729,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -690,7 +742,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.five% %extra.app%', $tableStyle, null, false);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.five% %extra.app%',
+            $tableStyle,
+            null,
+            false,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -747,7 +806,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -758,7 +819,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.five% %extra.app%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.five% %extra.app%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -816,7 +884,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -827,7 +897,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.five% <%extra.Exception%>', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.five% <%extra.Exception%>',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -886,7 +963,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -897,7 +976,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.five% %extra.app%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.five% %extra.app%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -958,7 +1044,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -969,7 +1057,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.five% %extra.app%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.five% %extra.app%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1030,7 +1125,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1041,7 +1138,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% context.one %context.five% %extra.app% extra.Exception', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% context.one %context.five% %extra.app% extra.Exception',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1098,7 +1202,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1109,7 +1215,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1170,7 +1283,9 @@ final class StreamFormatterTest extends TestCase
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setRows')
@@ -1181,7 +1296,14 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1228,7 +1350,9 @@ this is a formatted message
 
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | General Info                                                                                                                                                                                                                                                               |
-|                 Time | ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           |
+|                 Time | ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+) . '                                                                                                                                                                                                                           |
 |                Level | ERROR                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Extra                                                                                                                                                                                                                                                                      |
@@ -1248,7 +1372,14 @@ this is a formatted message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%', $tableStyle, null, true);
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            $tableStyle,
+            null,
+            true,
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1345,7 +1476,9 @@ this is a formatted message
             ->willReturnSelf();
         $table->expects(self::once())
             ->method('setColumnWidths')
-            ->with([StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN])
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
             ->willReturnSelf();
         $table->expects(self::exactly(3))
             ->method('setRows')
@@ -1380,7 +1513,9 @@ test message
 
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ General Info                                                                                                                                                                                                                                                               │
-│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 └──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -1391,7 +1526,9 @@ test message
 
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ General Info                                                                                                                                                                                                                                                               │
-│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Extra                                                                                                                                                                                                                                                                      │
@@ -1414,7 +1551,9 @@ test message
 
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ General Info                                                                                                                                                                                                                                                               │
-│                 Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '                                                                                                                                                                                                                           │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+) . '                                                                                                                                                                                                                           │
 │                Level │ ERROR                                                                                                                                                                                                                                               │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Extra                                                                                                                                                                                                                                                                      │

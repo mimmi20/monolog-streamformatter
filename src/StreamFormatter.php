@@ -88,7 +88,9 @@ final class StreamFormatter extends NormalizerFormatter
         $this->table->setColumnMaxWidth(0, self::WIDTH_FIRST_COLUMN);
         $this->table->setColumnMaxWidth(1, self::WIDTH_SECOND_COLUMN);
         $this->table->setColumnMaxWidth(2, self::WIDTH_THIRD_COLUMN);
-        $this->table->setColumnWidths([self::WIDTH_FIRST_COLUMN, self::WIDTH_SECOND_COLUMN, self::WIDTH_THIRD_COLUMN]);
+        $this->table->setColumnWidths(
+            [self::WIDTH_FIRST_COLUMN, self::WIDTH_SECOND_COLUMN, self::WIDTH_THIRD_COLUMN],
+        );
     }
 
     /** @throws void */
@@ -145,8 +147,30 @@ final class StreamFormatter extends NormalizerFormatter
 
         $this->table->addRow([new TableCell('General Info', ['colspan' => self::SPAN_ALL_COLUMS])]);
 
-        $this->table->addRow([new TableCell('Time', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($record->datetime->format($this->dateFormat), ['colspan' => self::SPAN_LAST_COLUMNS])]);
-        $this->table->addRow([new TableCell('Level', ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($levelName, ['colspan' => self::SPAN_LAST_COLUMNS])]);
+        $this->table->addRow(
+            [
+                new TableCell(
+                    'Time',
+                    ['style' => new TableCellStyle(['align' => 'right'])],
+                ),
+                new TableCell(
+                    $record->datetime->format($this->dateFormat),
+                    ['colspan' => self::SPAN_LAST_COLUMNS],
+                ),
+            ],
+        );
+        $this->table->addRow(
+            [
+                new TableCell(
+                    'Level',
+                    ['style' => new TableCellStyle(['align' => 'right'])],
+                ),
+                new TableCell(
+                    $levelName,
+                    ['colspan' => self::SPAN_LAST_COLUMNS],
+                ),
+            ],
+        );
 
         foreach (['extra', 'context'] as $element) {
             if (empty($vars[$element]) || !is_iterable($vars[$element])) {
@@ -154,7 +178,9 @@ final class StreamFormatter extends NormalizerFormatter
             }
 
             $this->table->addRow(new TableSeparator());
-            $this->table->addRow([new TableCell(ucfirst($element), ['colspan' => self::SPAN_ALL_COLUMS])]);
+            $this->table->addRow(
+                [new TableCell(ucfirst($element), ['colspan' => self::SPAN_ALL_COLUMS])],
+            );
             $this->table->addRow(new TableSeparator());
 
             foreach ($vars[$element] as $key => $value) {
@@ -162,16 +188,20 @@ final class StreamFormatter extends NormalizerFormatter
                     continue;
                 }
 
-                if (is_array($record->{$element}) && isset($record->{$element}[$key]) && $record->{$element}[$key] instanceof Throwable) {
+                if (
+                    is_array($record->{$element})
+                    && isset($record->{$element}[$key])
+                    && $record->{$element}[$key] instanceof Throwable
+                ) {
                     $exception = $record->{$element}[$key];
 
                     $value = [
-                        'Type' => $exception::class,
-                        'Message' => $exception->getMessage(),
                         'Code' => $exception->getCode(),
                         'File' => $exception->getFile(),
                         'Line' => $exception->getLine(),
+                        'Message' => $exception->getMessage(),
                         'Trace' => $exception->getTraceAsString(),
+                        'Type' => $exception::class,
                     ];
 
                     $this->addFact($key, $value);
@@ -181,12 +211,12 @@ final class StreamFormatter extends NormalizerFormatter
                     if ($prev instanceof Throwable) {
                         do {
                             $value = [
-                                'Type' => $prev::class,
-                                'Message' => $prev->getMessage(),
                                 'Code' => $prev->getCode(),
                                 'File' => $prev->getFile(),
                                 'Line' => $prev->getLine(),
+                                'Message' => $prev->getMessage(),
                                 'Trace' => $prev->getTraceAsString(),
+                                'Type' => $prev::class,
                             ];
 
                             $this->addFact('previous Throwable', $value);
@@ -229,7 +259,7 @@ final class StreamFormatter extends NormalizerFormatter
     /** @throws RuntimeException */
     private function getFormatter(): LineFormatter
     {
-        if (null === $this->formatter) {
+        if ($this->formatter === null) {
             $this->formatter = new LineFormatter(
                 format: $this->format,
                 dateFormat: $this->dateFormat,
@@ -251,7 +281,7 @@ final class StreamFormatter extends NormalizerFormatter
     /** @throws RuntimeException if encoding fails and errors are not ignored */
     private function convertToString(mixed $data): string
     {
-        if (null === $data || is_bool($data)) {
+        if ($data === null || is_bool($data)) {
             return var_export($data, true);
         }
 
@@ -266,7 +296,7 @@ final class StreamFormatter extends NormalizerFormatter
     private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
-            if (0 === mb_strpos($str, '{')) {
+            if (mb_strpos($str, '{') === 0) {
                 return str_replace(['\r', '\n'], ["\r", "\n"], $str);
             }
 
@@ -291,8 +321,26 @@ final class StreamFormatter extends NormalizerFormatter
                     $cellValue = $this->stringify($cellValue);
                 }
 
-                if (0 === $number) {
-                    $this->table->addRow([new TableCell($name, ['rowspan' => $rowspan, 'style' => new TableCellStyle(['align' => 'right'])]), new TableCell((string) $key), new TableCell($cellValue)]);
+                if ($number === 0) {
+                    $this->table->addRow(
+                        [
+                            new TableCell(
+                                $name,
+                                [
+                                    'rowspan' => $rowspan,
+                                    'style' => new TableCellStyle(
+                                        ['align' => 'right'],
+                                    ),
+                                ],
+                            ),
+                            new TableCell(
+                                (string) $key,
+                            ),
+                            new TableCell(
+                                $cellValue,
+                            ),
+                        ],
+                    );
                 } else {
                     $this->table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
                 }
@@ -305,6 +353,14 @@ final class StreamFormatter extends NormalizerFormatter
             $value = $this->stringify($value);
         }
 
-        $this->table->addRow([new TableCell($name, ['style' => new TableCellStyle(['align' => 'right'])]), new TableCell($value, ['colspan' => self::SPAN_LAST_COLUMNS])]);
+        $this->table->addRow(
+            [
+                new TableCell($name, ['style' => new TableCellStyle(['align' => 'right'])]),
+                new TableCell(
+                    $value,
+                    ['colspan' => self::SPAN_LAST_COLUMNS],
+                ),
+            ],
+        );
     }
 }
