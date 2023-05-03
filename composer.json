@@ -63,7 +63,7 @@
   },
   "extra": {
     "laminas": {
-      "component": "Mimmi20\\Monolog\\StreamFormatter",
+      "component": "Mimmi20\\Monolog\\Formatter",
       "config-provider": "Mimmi20\\Monolog\\Formatter\\ConfigProvider"
     }
   }
