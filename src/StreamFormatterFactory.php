@@ -31,7 +31,7 @@ final class StreamFormatterFactory implements FactoryInterface
 
     /**
      * @param string                                $requestedName
-     * @param array<string, (string|int|bool)>|null $options
+     * @param array<string, (bool|int|string)>|null $options
      * @phpstan-param array{format?: string, tableStyle?: string, dateFormat?: string, allowInlineLineBreaks?: bool, includeStacktraces?: bool, maxNormalizeDepth?: int, maxNormalizeItemCount?: int, prettyPrint?: bool}|null $options
      *
      * @throws ServiceNotCreatedException
