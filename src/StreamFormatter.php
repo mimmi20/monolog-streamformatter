@@ -128,7 +128,7 @@ final class StreamFormatter extends NormalizerFormatter
      */
     public function format(LogRecord $record): string
     {
-        /** @var scalar|array<(array|scalar|null)>|null $vars */
+        /** @var array<(array|scalar|null)>|scalar|null $vars */
         /** @phpstan-var array{message: string, context: array<mixed>, level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: array<mixed>} $vars */
         $vars = $this->normalizeRecord($record);
 
