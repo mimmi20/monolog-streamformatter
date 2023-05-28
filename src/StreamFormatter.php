@@ -29,7 +29,6 @@ use function array_keys;
 use function count;
 use function is_array;
 use function is_bool;
-use function is_iterable;
 use function is_scalar;
 use function is_string;
 use function mb_strpos;
@@ -173,7 +172,7 @@ final class StreamFormatter extends NormalizerFormatter
         );
 
         foreach (['extra', 'context'] as $element) {
-            if (empty($vars[$element]) || !is_iterable($vars[$element])) {
+            if ($vars[$element] === []) {
                 continue;
             }
 

@@ -26,11 +26,15 @@ use ReflectionProperty;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
+use function assert;
 use function file_put_contents;
+use function in_array;
 use function str_repeat;
 use function str_replace;
 
@@ -420,6 +424,7 @@ final class StreamFormatterTest extends TestCase
         $message  = 'test message';
         $channel  = 'test-channel';
         $datetime = new DateTimeImmutable('now');
+        $level    = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -463,8 +468,64 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(3))
-            ->method('addRow');
+        $matcher = self::exactly(3);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -473,7 +534,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: [],
             extra: [],
@@ -493,6 +554,7 @@ final class StreamFormatterTest extends TestCase
         $message  = 'test message';
         $channel  = 'test-channel';
         $datetime = new DateTimeImmutable('now');
+        $level    = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -536,8 +598,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(15))
-            ->method('addRow');
+        $matcher = self::exactly(15);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        14 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -546,7 +695,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -566,6 +715,7 @@ final class StreamFormatterTest extends TestCase
         $message  = 'test message';
         $channel  = 'test-channel';
         $datetime = new DateTimeImmutable('now');
+        $level    = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -609,8 +759,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(15))
-            ->method('addRow');
+        $matcher = self::exactly(15);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        14 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -619,7 +856,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -639,6 +876,7 @@ final class StreamFormatterTest extends TestCase
         $message  = 'test message';
         $channel  = 'test-channel';
         $datetime = new DateTimeImmutable('now');
+        $level    = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -682,8 +920,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(15))
-            ->method('addRow');
+        $matcher = self::exactly(15);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        14 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -692,7 +1017,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -713,6 +1038,7 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $datetime   = new DateTimeImmutable('now');
         $tableStyle = 'default';
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -756,8 +1082,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(16))
-            ->method('addRow');
+        $matcher = self::exactly(16);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        14 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -773,7 +1186,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -794,6 +1207,7 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $datetime   = new DateTimeImmutable('now');
         $tableStyle = 'default';
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -837,8 +1251,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(16))
-            ->method('addRow');
+        $matcher = self::exactly(16);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        14 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -854,7 +1355,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -876,6 +1377,7 @@ final class StreamFormatterTest extends TestCase
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
         $exception  = new RuntimeException('error');
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -922,8 +1424,99 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(22))
-            ->method('addRow');
+        $matcher = self::exactly(22);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 14, 16], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 15 => self::assertCount(
+                            1,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        8, 20 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 15) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -939,7 +1532,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception],
@@ -960,8 +1553,8 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
-
-        $exception = new RuntimeException('error');
+        $exception  = new RuntimeException('error');
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -1005,8 +1598,99 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(22))
-            ->method('addRow');
+        $matcher = self::exactly(22);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 14, 16], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 15 => self::assertCount(
+                            1,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        8, 20 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 15) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -1022,7 +1706,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception],
@@ -1043,6 +1727,7 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -1090,8 +1775,103 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(34))
-            ->method('addRow');
+        $matcher = self::exactly(34);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 26, 28], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 27 => self::assertCount(
+                            1,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        8, 14, 20, 32 => self::assertCount(
+                            3,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 27) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -1107,7 +1887,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception3],
@@ -1128,6 +1908,7 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
+        $level      = Level::Error;
 
         $exception1 = new RuntimeException('error');
         $exception2 = new UnexpectedValueException('error', 4711, $exception1);
@@ -1178,8 +1959,103 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(34))
-            ->method('addRow');
+        $matcher = self::exactly(34);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 26, 28], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 27 => self::assertCount(
+                            1,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        8, 14, 20, 32 => self::assertCount(
+                            3,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 27) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -1195,7 +2071,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app', 'Exception' => $exception3],
@@ -1216,6 +2092,7 @@ final class StreamFormatterTest extends TestCase
         $channel    = 'test-channel';
         $tableStyle = 'default';
         $datetime   = new DateTimeImmutable('now');
+        $level      = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -1262,8 +2139,94 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(12))
-            ->method('addRow');
+        $matcher = self::exactly(12);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -1279,7 +2242,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -1304,6 +2267,7 @@ final class StreamFormatterTest extends TestCase
         $stdClass         = new stdClass();
         $stdClass->a      = $channel;
         $stdClass->b      = $message;
+        $level            = Level::Error;
 
         $expected = 'rendered-content';
 
@@ -1347,8 +2311,95 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(13))
-            ->method('addRow');
+        $matcher = self::exactly(13);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        13 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::once())
             ->method('render');
 
@@ -1364,7 +2415,7 @@ final class StreamFormatterTest extends TestCase
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
             extra: ['app' => 'test-app'],
@@ -1399,6 +2450,7 @@ final class StreamFormatterTest extends TestCase
         $stdClass         = new stdClass();
         $stdClass->a      = $channel;
         $stdClass->b      = $message;
+        $level            = Level::Error;
 
         $expected = '==============================================================================================================================================================================================================================================================================
 
@@ -1440,7 +2492,7 @@ this is a formatted message
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
             extra: ['app' => 'test-app'],
@@ -1478,6 +2530,7 @@ this is a formatted message
         $stdClass         = new stdClass();
         $stdClass->a      = $channel;
         $stdClass->b      = $message;
+        $level            = Level::Error;
 
         $expected = '==============================================================================================================================================================================================================================================================================
 
@@ -1519,7 +2572,7 @@ this is a formatted message
         $record = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level,
             message: $message,
             context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
             extra: ['app' => 'test-app'],
@@ -1553,6 +2606,9 @@ this is a formatted message
         $channel    = 'test-channel';
         $tableStyle = StreamFormatter::BOX_STYLE;
         $datetime   = new DateTimeImmutable('now');
+        $level1     = Level::Error;
+        $level2     = Level::Error;
+        $level3     = Level::Error;
 
         $expected1 = 'rendered-content-1';
         $expected2 = 'rendered-content-2';
@@ -1561,7 +2617,7 @@ this is a formatted message
         $record1 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level1,
             message: $message,
             context: [],
             extra: [],
@@ -1569,7 +2625,7 @@ this is a formatted message
         $record2 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level2,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
@@ -1577,7 +2633,7 @@ this is a formatted message
         $record3 = new LogRecord(
             datetime: $datetime,
             channel: $channel,
-            level: Level::Error,
+            level: $level3,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
@@ -1635,8 +2691,236 @@ this is a formatted message
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $table->expects(self::exactly(34))
-            ->method('addRow');
+        $matcher = self::exactly(34);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level1, $level2, $level3): Table {
+                    if (
+                        in_array(
+                            $matcher->numberOfInvocations(),
+                            [7, 9, 11, 13, 22, 24, 26, 28],
+                            true,
+                        )
+                    ) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 4, 8, 12, 19, 23, 27 => self::assertCount(
+                            1,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        17, 32 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if (
+                        $matcher->numberOfInvocations() === 1
+                        || $matcher->numberOfInvocations() === 4
+                        || $matcher->numberOfInvocations() === 19
+                    ) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'General Info',
+                            (string) $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if (
+                        $matcher->numberOfInvocations() === 2
+                        || $matcher->numberOfInvocations() === 5
+                        || $matcher->numberOfInvocations() === 20
+                    ) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Time',
+                            (string) $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Level',
+                            (string) $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            $level1->getName(),
+                            (string) $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 6) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Level',
+                            (string) $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            $level2->getName(),
+                            (string) $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 21) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Level',
+                            (string) $tableCell1,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            $level3->getName(),
+                            (string) $tableCell2,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if (
+                        $matcher->numberOfInvocations() === 8
+                        || $matcher->numberOfInvocations() === 23
+                    ) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Extra',
+                            (string) $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    if (
+                        $matcher->numberOfInvocations() === 12
+                        || $matcher->numberOfInvocations() === 27
+                    ) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(
+                            TableCell::class,
+                            $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                        self::assertSame(
+                            'Context',
+                            (string) $tableCell,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+                    }
+
+                    return $table;
+                },
+            );
         $table->expects(self::exactly(3))
             ->method('render');
 
@@ -1746,6 +3030,109 @@ test message
             level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            extra: ['app' => 'test-app'],
+        );
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+
+        $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
+
+        file_put_contents('output.txt', $formatted);
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $expected1 . $expected2 . $expected3),
+            str_replace("\r\n", "\n", $formatted),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormatBatch3(): void
+    {
+        $message    = 'test message';
+        $channel    = 'test-channel';
+        $tableStyle = StreamFormatter::BOX_STYLE;
+        $datetime   = new DateTimeImmutable('now');
+
+        $expected1 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected2 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Context                                                                                                                                                                                                                                                                    │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  two │ true                                                                                                                                                                                                                                                │
+│                three │ false                                                                                                                                                                                                                                               │
+│                 four │ 0                    │ abc                                                                                                                                                                                                                          │
+│                      │ 1                    │ xyz                                                                                                                                                                                                                          │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected3 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Extra                                                                                                                                                                                                                                                                      │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  app │ test-app                                                                                                                                                                                                                                            │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+
+        $record1 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: [],
+            extra: [],
+        );
+        $record2 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: [],
+        );
+        $record3 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: [],
             extra: ['app' => 'test-app'],
         );
 
