@@ -277,9 +277,11 @@ final class StreamFormatter extends NormalizerFormatter
                             ),
                         ],
                     );
-                } else {
-                    $this->table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
+
+                    continue;
                 }
+
+                $this->table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
             }
 
             return;

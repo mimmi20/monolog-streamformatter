@@ -1506,12 +1506,82 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
+                    if ($matcher->numberOfInvocations() === 8) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 10) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 11) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 12) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 13) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
                     if ($matcher->numberOfInvocations() === 15) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell);
                         self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    if ($matcher->numberOfInvocations() === 20) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('four', (string) $tableCell);
+
+                        return $table;
                     }
 
                     return $table;
@@ -1676,6 +1746,66 @@ final class StreamFormatterTest extends TestCase
 
                         self::assertInstanceOf(TableCell::class, $tableCell);
                         self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 8) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 10) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 11) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 12) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 13) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
 
                         return $table;
                     }
@@ -1861,6 +1991,186 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
+                    if ($matcher->numberOfInvocations() === 8) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 10) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 11) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 12) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 13) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 14) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('previous Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 15) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 16) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 17) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 18) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 19) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 20) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('previous Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 21) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 22) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 23) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 24) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 25) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
                     if ($matcher->numberOfInvocations() === 27) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
@@ -2041,6 +2351,186 @@ final class StreamFormatterTest extends TestCase
 
                         self::assertInstanceOf(TableCell::class, $tableCell);
                         self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 8) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 10) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 11) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 12) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 13) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 14) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('previous Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 15) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 16) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 17) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 18) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 19) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 20) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('previous Throwable', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 21) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('File', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 22) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Line', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 23) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Message', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 24) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Trace', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 25) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Type', (string) $tableCell);
 
                         return $table;
                     }
