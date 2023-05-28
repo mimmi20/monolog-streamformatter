@@ -324,12 +324,6 @@ final class StreamFormatter extends NormalizerFormatter
                 continue;
             }
 
-            if ($context[$key] instanceof Throwable) {
-                $this->addThrowable($context[$key]);
-
-                continue;
-            }
-
             $this->addFact($key, $this->normalize($value));
         }
     }

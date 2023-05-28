@@ -697,7 +697,7 @@ final class StreamFormatterTest extends TestCase
             channel: $channel,
             level: $level,
             message: $message,
-            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            context: ['one' => null, 'two' => true, 0 => 'numeric-key', 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
         );
 
@@ -858,7 +858,7 @@ final class StreamFormatterTest extends TestCase
             channel: $channel,
             level: $level,
             message: $message,
-            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            context: ['one' => null, 'two' => true, 0 => 'numeric-key', 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
         );
 
@@ -1019,7 +1019,7 @@ final class StreamFormatterTest extends TestCase
             channel: $channel,
             level: $level,
             message: $message,
-            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            context: ['one' => null, 'two' => true, 0 => 'numeric-key', 'three' => false, 'four' => ['abc', 'xyz']],
             extra: ['app' => 'test-app'],
         );
 
@@ -1188,7 +1188,7 @@ final class StreamFormatterTest extends TestCase
             channel: $channel,
             level: $level,
             message: $message,
-            context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
+            context: ['one' => null, 'two' => true, 0 => 'numeric-key', 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
             extra: ['app' => 'test-app'],
         );
 
@@ -1358,7 +1358,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app'],
+            extra: ['app' => 'test-app', 0 => 'numeric-key'],
         );
 
         $formatted = $formatter->format($record);
@@ -1605,7 +1605,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 'Exception' => $exception],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception],
         );
 
         $formatted = $formatter->format($record);
@@ -1839,7 +1839,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 'Exception' => $exception],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception],
         );
 
         $formatted = $formatter->format($record);
@@ -2200,7 +2200,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 'Exception' => $exception3],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3],
         );
 
         $formatted = $formatter->format($record);
@@ -2564,7 +2564,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 'Exception' => $exception3],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3],
         );
 
         $formatted = $formatter->format($record);
@@ -3615,6 +3615,109 @@ test message
             level: Level::Error,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz']],
+            extra: [],
+        );
+        $record3 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: [],
+            extra: ['app' => 'test-app'],
+        );
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+
+        $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
+
+        file_put_contents('output.txt', $formatted);
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $expected1 . $expected2 . $expected3),
+            str_replace("\r\n", "\n", $formatted),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormatBatch4(): void
+    {
+        $message    = ' test message ';
+        $channel    = 'test-channel';
+        $tableStyle = StreamFormatter::BOX_STYLE;
+        $datetime   = new DateTimeImmutable('now');
+
+        $expected1 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected2 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Context                                                                                                                                                                                                                                                                    │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  two │ true                                                                                                                                                                                                                                                │
+│                three │ false                                                                                                                                                                                                                                               │
+│            four five │ 0                    │ abc                                                                                                                                                                                                                          │
+│                      │ 1                    │ xyz                                                                                                                                                                                                                          │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+        $expected3 = '==============================================================================================================================================================================================================================================================================
+
+test message
+
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ General Info                                                                                                                                                                                                                                                               │
+│                 Time │ ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           │
+│                Level │ ERROR                                                                                                                                                                                                                                               │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Extra                                                                                                                                                                                                                                                                      │
+├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                  app │ test-app                                                                                                                                                                                                                                            │
+└──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+';
+
+        $record1 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: [],
+            extra: [],
+        );
+        $record2 = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'two' => true, 'three' => false, ' four_five ' => ['abc', 'xyz']],
             extra: [],
         );
         $record3 = new LogRecord(
