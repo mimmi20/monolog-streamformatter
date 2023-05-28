@@ -27,7 +27,7 @@ use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\Output;
+use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
 use function file_put_contents;
@@ -429,15 +429,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->with()
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $message): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame($message, $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -499,14 +502,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $message): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame($message, $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -568,14 +575,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame('test message true test-app', $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -637,14 +648,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame('test message ["abc","xyz"] test-app', $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -707,14 +722,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame('test message test test test-app', $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -784,14 +803,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame("test message test\ntest test-app", $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -862,14 +885,21 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', 220), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $exception): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame(
+                            "test message test\ntest <[object] (RuntimeException(code: " . $exception->getCode() . '): error at ' . $exception->getFile() . ':' . $exception->getLine() . ')>',
+                            $messages,
+                        ),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -941,14 +971,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame("test message test\ntest test-app", $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -1022,14 +1056,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame("test message test\ntest test-app", $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -1103,14 +1141,21 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame(
+                            "test message context.one test\ntest test-app extra.Exception",
+                            $messages,
+                        ),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -1180,14 +1225,21 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame(
+                            "test message NULL test\ntest  test-app test-app",
+                            $messages,
+                        ),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -1261,14 +1313,18 @@ final class StreamFormatterTest extends TestCase
         $output->expects(self::exactly(2))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected);
-        $output->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $formattedMessage): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame($formattedMessage, $messages),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
@@ -1412,6 +1468,85 @@ this is a formatted message
      * @throws Exception
      * @throws RuntimeException
      */
+    public function testFormat14(): void
+    {
+        $message          = ' test message ';
+        $channel          = 'test-channel';
+        $tableStyle       = 'default';
+        $datetime         = new DateTimeImmutable('now');
+        $formattedMessage = 'this is a formatted message';
+        $stdClass         = new stdClass();
+        $stdClass->a      = $channel;
+        $stdClass->b      = $message;
+
+        $expected = '==============================================================================================================================================================================================================================================================================
+
+this is a formatted message
+
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| General Info                                                                                                                                                                                                                                                               |
+|                 Time | ' . $datetime->format(
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                                                                                                                                                                                                           |
+|                Level | ERROR                                                                                                                                                                                                                                               |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Extra                                                                                                                                                                                                                                                                      |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                  app | test-app                                                                                                                                                                                                                                            |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Context                                                                                                                                                                                                                                                                    |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                  one | NULL                                                                                                                                                                                                                                                |
+|                 five | test                                                                                                                                                                                                                                                |
+|                      | test                                                                                                                                                                                                                                                |
+|                  six | stdClass             | {"a":"test-channel","b":" test message "}                                                                                                                                                                                    |
++----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+';
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            $tableStyle,
+            null,
+            true,
+        );
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: Level::Error,
+            message: $message,
+            context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
+            extra: ['app' => 'test-app'],
+        );
+
+        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lineFormatter->expects(self::once())
+            ->method('format')
+            ->with($record)
+            ->willReturn($formattedMessage);
+
+        $formatter->setFormatter($lineFormatter);
+
+        $formatted = $formatter->format($record);
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $expected),
+            str_replace("\r\n", "\n", $formatted),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
     public function testFormatBatch(): void
     {
         $message    = 'test message';
@@ -1454,14 +1589,30 @@ this is a formatted message
         $output->expects(self::exactly(6))
             ->method('fetch')
             ->willReturnOnConsecutiveCalls('', $expected1, '', $expected2, '', $expected3);
-        $output->expects(self::exactly(15))
+        $matcher = self::exactly(15);
+        $output->expects($matcher)
             ->method('writeln')
-            ->willReturnMap(
-                [
-                    [str_repeat('=', StreamFormatter::FULL_WIDTH), Output::OUTPUT_NORMAL, null],
-                    ['', Output::OUTPUT_NORMAL, null],
-                    [$message, Output::OUTPUT_NORMAL, null],
-                ],
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $message): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1, 6, 11 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        2, 4, 5, 7, 9, 10, 12, 14, 15 => self::assertSame(
+                            '',
+                            $messages,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        default => self::assertSame(
+                            $message,
+                            $messages,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                    };
+                },
             );
 
         $table = $this->getMockBuilder(Table::class)
