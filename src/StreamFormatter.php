@@ -30,9 +30,9 @@ use function is_array;
 use function is_bool;
 use function is_scalar;
 use function is_string;
-use function mb_strpos;
 use function str_repeat;
 use function str_replace;
+use function str_starts_with;
 use function trim;
 use function var_export;
 
@@ -232,7 +232,7 @@ final class StreamFormatter extends NormalizerFormatter
     private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
-            if (mb_strpos($str, '{') === 0) {
+            if (str_starts_with($str, '{')) {
                 return str_replace(['\r', '\n'], ["\r", "\n"], $str);
             }
 
