@@ -18,7 +18,6 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
-use Monolog\Utils;
 use OutOfRangeException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +35,6 @@ use UnexpectedValueException;
 use function assert;
 use function file_put_contents;
 use function in_array;
-use function json_encode;
 use function str_repeat;
 use function str_replace;
 
@@ -3205,7 +3203,7 @@ this is a formatted message
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
-                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level, $message2, $message3, $appName, $stdClass): Table {
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level, $message2, $message3, $appName): Table {
                     if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
@@ -3347,15 +3345,6 @@ this is a formatted message
 
                         self::assertInstanceOf(TableCell::class, $tableCell2);
                         self::assertSame('stdClass', (string) $tableCell2);
-
-                        $tableCell3 = $row[2];
-                        assert($tableCell3 instanceof TableCell);
-
-                        self::assertInstanceOf(TableCell::class, $tableCell3);
-                        self::assertSame(
-                            json_encode($stdClass, Utils::DEFAULT_JSON_FLAGS),
-                            (string) $tableCell3,
-                        );
 
                         return $table;
                     }

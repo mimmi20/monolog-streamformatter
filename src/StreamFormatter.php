@@ -206,6 +206,100 @@ final class StreamFormatter extends NormalizerFormatter
         return $this->formatter;
     }
 
+    /**
+     * @param array<mixed> $context
+     *
+     * @throws RuntimeException
+     */
+    private function addContext(array $context): void
+    {
+        if ($context === []) {
+            return;
+        }
+
+        $this->table->addRow(new TableSeparator());
+        $this->table->addRow(
+            [new TableCell('Context', ['colspan' => self::SPAN_ALL_COLUMS])],
+        );
+        $this->table->addRow(new TableSeparator());
+
+        foreach ($context as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
+
+            $this->addFact($key, $this->normalize($value));
+        }
+    }
+
+    /**
+     * @param array<mixed> $extra
+     *
+     * @throws RuntimeException
+     */
+    private function addExtra(array $extra): void
+    {
+        if ($extra === []) {
+            return;
+        }
+
+        $this->table->addRow(new TableSeparator());
+        $this->table->addRow(
+            [new TableCell('Extra', ['colspan' => self::SPAN_ALL_COLUMS])],
+        );
+        $this->table->addRow(new TableSeparator());
+
+        foreach ($extra as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
+
+            if ($extra[$key] instanceof Throwable) {
+                $this->addThrowable($extra[$key]);
+
+                continue;
+            }
+
+            $this->addFact($key, $this->normalize($value));
+        }
+    }
+
+    /** @throws RuntimeException */
+    private function addThrowable(Throwable $exception): void
+    {
+        $value = [
+            'Code' => $exception->getCode(),
+            'File' => $exception->getFile(),
+            'Line' => $exception->getLine(),
+            'Message' => $exception->getMessage(),
+            'Trace' => $exception->getTraceAsString(),
+            'Type' => $exception::class,
+        ];
+
+        $this->addFact('Throwable', $value);
+
+        $prev = $exception->getPrevious();
+
+        if (!$prev instanceof Throwable) {
+            return;
+        }
+
+        do {
+            $value = [
+                'Code' => $prev->getCode(),
+                'File' => $prev->getFile(),
+                'Line' => $prev->getLine(),
+                'Message' => $prev->getMessage(),
+                'Trace' => $prev->getTraceAsString(),
+                'Type' => $prev::class,
+            ];
+
+            $this->addFact('previous Throwable', $value);
+
+            $prev = $prev->getPrevious();
+        } while ($prev instanceof Throwable);
+    }
+
     /** @throws RuntimeException if encoding fails and errors are not ignored */
     private function addFact(string $name, mixed $value): void
     {
@@ -310,99 +404,5 @@ final class StreamFormatter extends NormalizerFormatter
         }
 
         return str_replace(["\r\n", "\r", "\n"], ' ', $str);
-    }
-
-    /**
-     * @param array<mixed> $context
-     *
-     * @throws RuntimeException
-     */
-    private function addContext(array $context): void
-    {
-        if ($context === []) {
-            return;
-        }
-
-        $this->table->addRow(new TableSeparator());
-        $this->table->addRow(
-            [new TableCell('Context', ['colspan' => self::SPAN_ALL_COLUMS])],
-        );
-        $this->table->addRow(new TableSeparator());
-
-        foreach ($context as $key => $value) {
-            if (!is_string($key)) {
-                continue;
-            }
-
-            $this->addFact($key, $this->normalize($value));
-        }
-    }
-
-    /**
-     * @param array<mixed> $extra
-     *
-     * @throws RuntimeException
-     */
-    private function addExtra(array $extra): void
-    {
-        if ($extra === []) {
-            return;
-        }
-
-        $this->table->addRow(new TableSeparator());
-        $this->table->addRow(
-            [new TableCell('Extra', ['colspan' => self::SPAN_ALL_COLUMS])],
-        );
-        $this->table->addRow(new TableSeparator());
-
-        foreach ($extra as $key => $value) {
-            if (!is_string($key)) {
-                continue;
-            }
-
-            if ($extra[$key] instanceof Throwable) {
-                $this->addThrowable($extra[$key]);
-
-                continue;
-            }
-
-            $this->addFact($key, $this->normalize($value));
-        }
-    }
-
-    /** @throws RuntimeException */
-    private function addThrowable(Throwable $exception): void
-    {
-        $value = [
-            'Code' => $exception->getCode(),
-            'File' => $exception->getFile(),
-            'Line' => $exception->getLine(),
-            'Message' => $exception->getMessage(),
-            'Trace' => $exception->getTraceAsString(),
-            'Type' => $exception::class,
-        ];
-
-        $this->addFact('Throwable', $value);
-
-        $prev = $exception->getPrevious();
-
-        if (!$prev instanceof Throwable) {
-            return;
-        }
-
-        do {
-            $value = [
-                'Code' => $prev->getCode(),
-                'File' => $prev->getFile(),
-                'Line' => $prev->getLine(),
-                'Message' => $prev->getMessage(),
-                'Trace' => $prev->getTraceAsString(),
-                'Type' => $prev::class,
-            ];
-
-            $this->addFact('previous Throwable', $value);
-
-            $prev = $prev->getPrevious();
-        } while ($prev instanceof Throwable);
     }
 }
