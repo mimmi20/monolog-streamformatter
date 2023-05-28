@@ -1424,12 +1424,12 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $matcher = self::exactly(22);
+        $matcher = self::exactly(23);
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
                 static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
-                    if (in_array($matcher->numberOfInvocations(), [4, 6, 14, 16], true)) {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 15, 17], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
                             $row,
@@ -1442,12 +1442,12 @@ final class StreamFormatterTest extends TestCase
                     self::assertIsArray($row, (string) $matcher->numberOfInvocations());
 
                     match ($matcher->numberOfInvocations()) {
-                        1, 5, 15 => self::assertCount(
+                        1, 5, 16 => self::assertCount(
                             1,
                             $row,
                             (string) $matcher->numberOfInvocations(),
                         ),
-                        8, 20 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        8, 21 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
                         default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
                     };
 
@@ -1507,11 +1507,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 8) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -1566,7 +1572,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($matcher->numberOfInvocations() === 15) {
+                    if ($matcher->numberOfInvocations() === 16) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1574,7 +1580,7 @@ final class StreamFormatterTest extends TestCase
                         self::assertSame('Context', (string) $tableCell);
                     }
 
-                    if ($matcher->numberOfInvocations() === 20) {
+                    if ($matcher->numberOfInvocations() === 21) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1605,7 +1611,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception, 'system' => 'test-system'],
         );
 
         $formatted = $formatter->format($record);
@@ -1668,12 +1674,12 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $matcher = self::exactly(22);
+        $matcher = self::exactly(23);
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
                 static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
-                    if (in_array($matcher->numberOfInvocations(), [4, 6, 14, 16], true)) {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 15, 17], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
                             $row,
@@ -1686,12 +1692,12 @@ final class StreamFormatterTest extends TestCase
                     self::assertIsArray($row, (string) $matcher->numberOfInvocations());
 
                     match ($matcher->numberOfInvocations()) {
-                        1, 5, 15 => self::assertCount(
+                        1, 5, 16 => self::assertCount(
                             1,
                             $row,
                             (string) $matcher->numberOfInvocations(),
                         ),
-                        8, 20 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        8, 21 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
                         default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
                     };
 
@@ -1751,11 +1757,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 8) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -1810,7 +1822,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($matcher->numberOfInvocations() === 15) {
+                    if ($matcher->numberOfInvocations() === 16) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1839,7 +1851,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception, 'system' => 'test-system'],
         );
 
         $formatted = $formatter->format($record);
@@ -1905,12 +1917,12 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $matcher = self::exactly(34);
+        $matcher = self::exactly(35);
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
                 static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
-                    if (in_array($matcher->numberOfInvocations(), [4, 6, 26, 28], true)) {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 27, 29], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
                             $row,
@@ -1923,12 +1935,12 @@ final class StreamFormatterTest extends TestCase
                     self::assertIsArray($row, (string) $matcher->numberOfInvocations());
 
                     match ($matcher->numberOfInvocations()) {
-                        1, 5, 27 => self::assertCount(
+                        1, 5, 28 => self::assertCount(
                             1,
                             $row,
                             (string) $matcher->numberOfInvocations(),
                         ),
-                        8, 14, 20, 32 => self::assertCount(
+                        8, 14, 20, 33 => self::assertCount(
                             3,
                             $row,
                             (string) $matcher->numberOfInvocations(),
@@ -1992,11 +2004,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 8) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2052,11 +2070,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 14) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('previous Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('previous Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2112,11 +2136,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 20) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('previous Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('previous Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2171,7 +2201,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($matcher->numberOfInvocations() === 27) {
+                    if ($matcher->numberOfInvocations() === 28) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -2200,7 +2230,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3, 'system' => 'test-system'],
         );
 
         $formatted = $formatter->format($record);
@@ -2269,12 +2299,12 @@ final class StreamFormatterTest extends TestCase
             ->method('setRows')
             ->with([])
             ->willReturnSelf();
-        $matcher = self::exactly(34);
+        $matcher = self::exactly(35);
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
                 static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level): Table {
-                    if (in_array($matcher->numberOfInvocations(), [4, 6, 26, 28], true)) {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 27, 29], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
                             $row,
@@ -2287,12 +2317,12 @@ final class StreamFormatterTest extends TestCase
                     self::assertIsArray($row, (string) $matcher->numberOfInvocations());
 
                     match ($matcher->numberOfInvocations()) {
-                        1, 5, 27 => self::assertCount(
+                        1, 5, 28 => self::assertCount(
                             1,
                             $row,
                             (string) $matcher->numberOfInvocations(),
                         ),
-                        8, 14, 20, 32 => self::assertCount(
+                        8, 14, 20, 33 => self::assertCount(
                             3,
                             $row,
                             (string) $matcher->numberOfInvocations(),
@@ -2356,11 +2386,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 8) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2416,11 +2452,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 14) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('previous Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('previous Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2476,11 +2518,17 @@ final class StreamFormatterTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 20) {
-                        $tableCell = $row[0];
-                        assert($tableCell instanceof TableCell);
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
 
-                        self::assertInstanceOf(TableCell::class, $tableCell);
-                        self::assertSame('previous Throwable', (string) $tableCell);
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('previous Throwable', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('Code', (string) $tableCell2);
 
                         return $table;
                     }
@@ -2535,7 +2583,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($matcher->numberOfInvocations() === 27) {
+                    if ($matcher->numberOfInvocations() === 28) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -2564,7 +2612,7 @@ final class StreamFormatterTest extends TestCase
             level: $level,
             message: $message,
             context: ['one' => null, 'two' => true, 'three' => false, 'four' => ['abc', 'xyz'], 'five' => "test\ntest"],
-            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3],
+            extra: ['app' => 'test-app', 0 => 'numeric-key', 'Exception' => $exception3, 'system' => 'test-system'],
         );
 
         $formatted = $formatter->format($record);
