@@ -27,14 +27,12 @@ use Throwable;
 use function array_keys;
 use function count;
 use function is_array;
-use function is_bool;
 use function is_scalar;
 use function is_string;
 use function str_repeat;
 use function str_replace;
 use function str_starts_with;
 use function trim;
-use function var_export;
 
 final class StreamFormatter extends NormalizerFormatter
 {
@@ -209,40 +207,6 @@ final class StreamFormatter extends NormalizerFormatter
     }
 
     /** @throws RuntimeException if encoding fails and errors are not ignored */
-    private function stringify(mixed $value): string
-    {
-        return $this->replaceNewlines($this->convertToString($value));
-    }
-
-    /** @throws RuntimeException if encoding fails and errors are not ignored */
-    private function convertToString(mixed $data): string
-    {
-        if ($data === null || is_bool($data)) {
-            return var_export($data, true);
-        }
-
-        if (is_scalar($data)) {
-            return (string) $data;
-        }
-
-        return $this->toJson($data, true);
-    }
-
-    /** @throws void */
-    private function replaceNewlines(string $str): string
-    {
-        if ($this->allowInlineLineBreaks) {
-            if (str_starts_with($str, '{')) {
-                return str_replace(['\r', '\n'], ["\r", "\n"], $str);
-            }
-
-            return $str;
-        }
-
-        return str_replace(["\r\n", "\r", "\n"], ' ', $str);
-    }
-
-    /** @throws RuntimeException if encoding fails and errors are not ignored */
     private function addFact(string $name, mixed $value): void
     {
         $name = trim(str_replace('_', ' ', $name));
@@ -300,6 +264,52 @@ final class StreamFormatter extends NormalizerFormatter
                 ),
             ],
         );
+    }
+
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function stringify(mixed $value): string
+    {
+        return $this->replaceNewlines($this->convertToString($value));
+    }
+
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function convertToString(mixed $data): string
+    {
+        if (is_string($data)) {
+            return $data;
+        }
+
+        if ($data === null) {
+            return 'null';
+        }
+
+        if ($data === true) {
+            return 'true';
+        }
+
+        if ($data === false) {
+            return 'false';
+        }
+
+        if (is_scalar($data)) {
+            return (string) $data;
+        }
+
+        return $this->toJson($data, true);
+    }
+
+    /** @throws void */
+    private function replaceNewlines(string $str): string
+    {
+        if ($this->allowInlineLineBreaks) {
+            if (str_starts_with($str, '{')) {
+                return str_replace(['\r\n', '\r', '\n'], ["\r\n", "\r", "\n"], $str);
+            }
+
+            return $str;
+        }
+
+        return str_replace(["\r\n", "\r", "\n"], ' ', $str);
     }
 
     /**

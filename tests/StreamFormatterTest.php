@@ -18,6 +18,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
+use Monolog\Utils;
 use OutOfRangeException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -35,6 +36,7 @@ use UnexpectedValueException;
 use function assert;
 use function file_put_contents;
 use function in_array;
+use function json_encode;
 use function str_repeat;
 use function str_replace;
 
@@ -3007,10 +3009,14 @@ this is a formatted message
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Context                                                                                                                                                                                                                                                                    |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                  one | NULL                                                                                                                                                                                                                                                |
+|                  one | null                                                                                                                                                                                                                                                |
+|                  two | true                                                                                                                                                                                                                                                |
+|                three | false                                                                                                                                                                                                                                               |
+|                 four | 42                                                                                                                                                                                                                                                  |
 |                 five | test                                                                                                                                                                                                                                                |
 |                      | test                                                                                                                                                                                                                                                |
 |                  six | stdClass             | {"a":"test-channel","b":"test message"}                                                                                                                                                                                      |
+|                seven | 47.11                                                                                                                                                                                                                                               |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ';
@@ -3032,7 +3038,7 @@ this is a formatted message
             channel: $channel,
             level: $level,
             message: $message,
-            context: ['one' => null, 'five' => "test\ntest", 'six' => $stdClass],
+            context: ['one' => null, 'two' => true, 'three' => false, 'four' => 42, 'five' => "test\ntest", 'six' => $stdClass, 'seven' => 47.11],
             extra: ['app' => 'test-app'],
         );
 
@@ -3087,7 +3093,7 @@ this is a formatted message
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Context                                                                                                                                                                                                                                                                    |
 +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                  one | NULL                                                                                                                                                                                                                                                |
+|                  one | null                                                                                                                                                                                                                                                |
 |                 five | test                                                                                                                                                                                                                                                |
 |                      | test                                                                                                                                                                                                                                                |
 |                  six | stdClass             | {"a":"test-channel","b":" test message "}                                                                                                                                                                                    |
@@ -3132,6 +3138,281 @@ this is a formatted message
             str_replace("\r\n", "\n", $expected),
             str_replace("\r\n", "\n", $formatted),
         );
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormat15(): void
+    {
+        $message1         = 'test message\rtest message 2\ntest message 3\r\ntest message 4';
+        $message2         = 'test message 5\rtest message 6\ntest message 7\r\ntest message 8';
+        $message3         = "test1\ntest2\rtest3\r\ntest4";
+        $channel          = 'test-channel';
+        $tableStyle       = 'default';
+        $datetime         = new DateTimeImmutable('now');
+        $formattedMessage = 'this is a formatted message';
+        $stdClass         = new stdClass();
+        $stdClass->a      = $channel;
+        $stdClass->b      = $message1;
+        $level            = Level::Error;
+        $appName          = 'test-app';
+
+        $expected = 'rendered-content';
+
+        $output = $this->getMockBuilder(BufferedOutput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $output->expects(self::exactly(2))
+            ->method('fetch')
+            ->willReturnOnConsecutiveCalls('', $expected);
+        $matcher = self::exactly(5);
+        $output->expects($matcher)
+            ->method('writeln')
+            ->willReturnCallback(
+                /** @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter */
+                static function (string | iterable $messages, int $options = OutputInterface::OUTPUT_NORMAL) use ($matcher, $formattedMessage): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages),
+                        2, 4, 5 => self::assertSame('', $messages),
+                        default => self::assertSame($formattedMessage, $messages),
+                    };
+                },
+            );
+
+        $table = $this->getMockBuilder(Table::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $table->expects(self::once())
+            ->method('setStyle')
+            ->with($tableStyle)
+            ->willReturnSelf();
+        $table->expects(self::exactly(3))
+            ->method('setColumnMaxWidth')
+            ->willReturnSelf();
+        $table->expects(self::once())
+            ->method('setColumnWidths')
+            ->with(
+                [StreamFormatter::WIDTH_FIRST_COLUMN, StreamFormatter::WIDTH_SECOND_COLUMN, StreamFormatter::WIDTH_THIRD_COLUMN],
+            )
+            ->willReturnSelf();
+        $table->expects(self::once())
+            ->method('setRows')
+            ->with([])
+            ->willReturnSelf();
+        $matcher = self::exactly(14);
+        $table->expects($matcher)
+            ->method('addRow')
+            ->willReturnCallback(
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level, $message2, $message3, $appName, $stdClass): Table {
+                    if (in_array($matcher->numberOfInvocations(), [4, 6, 8, 10], true)) {
+                        self::assertInstanceOf(
+                            TableSeparator::class,
+                            $row,
+                            (string) $matcher->numberOfInvocations(),
+                        );
+
+                        return $table;
+                    }
+
+                    self::assertIsArray($row, (string) $matcher->numberOfInvocations());
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 5, 9 => self::assertCount(1, $row, (string) $matcher->numberOfInvocations()),
+                        13 => self::assertCount(3, $row, (string) $matcher->numberOfInvocations()),
+                        default => self::assertCount(2, $row, (string) $matcher->numberOfInvocations()),
+                    };
+
+                    if ($matcher->numberOfInvocations() === 1) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('General Info', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 2) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Time', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame(
+                            $datetime->format(NormalizerFormatter::SIMPLE_DATE),
+                            (string) $tableCell2,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 3) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('Level', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($level->getName(), (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 5) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Extra', (string) $tableCell);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 7) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('app', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($appName, (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 9) {
+                        $tableCell = $row[0];
+                        assert($tableCell instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell);
+                        self::assertSame('Context', (string) $tableCell);
+                    }
+
+                    if ($matcher->numberOfInvocations() === 11) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('one', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('null', (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 12) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('five', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($message3, (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 13) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('six', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame('stdClass', (string) $tableCell2);
+
+                        $tableCell3 = $row[2];
+                        assert($tableCell3 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell3);
+                        self::assertSame(
+                            json_encode($stdClass, Utils::DEFAULT_JSON_FLAGS),
+                            (string) $tableCell3,
+                        );
+
+                        return $table;
+                    }
+
+                    if ($matcher->numberOfInvocations() === 14) {
+                        $tableCell1 = $row[0];
+                        assert($tableCell1 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell1);
+                        self::assertSame('seven', (string) $tableCell1);
+
+                        $tableCell2 = $row[1];
+                        assert($tableCell2 instanceof TableCell);
+
+                        self::assertInstanceOf(TableCell::class, $tableCell2);
+                        self::assertSame($message2, (string) $tableCell2);
+
+                        return $table;
+                    }
+
+                    return $table;
+                },
+            );
+        $table->expects(self::once())
+            ->method('render');
+
+        $formatter = new StreamFormatter(
+            $output,
+            $table,
+            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            $tableStyle,
+            null,
+            true,
+        );
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: $level,
+            message: $message1,
+            context: ['one' => null, 'five' => $message3, 'six' => $stdClass, 'seven' => $message2],
+            extra: ['app' => $appName],
+        );
+
+        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lineFormatter->expects(self::once())
+            ->method('format')
+            ->with($record)
+            ->willReturn($formattedMessage);
+
+        $formatter->setFormatter($lineFormatter);
+
+        $formatted = $formatter->format($record);
+
+        self::assertSame($expected, $formatted);
     }
 
     /**
@@ -3510,7 +3791,7 @@ test message
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  one │ null                                                                                                                                                                                                                                                │
 │                  two │ true                                                                                                                                                                                                                                                │
 │                three │ false                                                                                                                                                                                                                                               │
 │                 four │ 0                    │ abc                                                                                                                                                                                                                          │
@@ -3535,7 +3816,7 @@ test message
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  one │ null                                                                                                                                                                                                                                                │
 │                  two │ true                                                                                                                                                                                                                                                │
 │                three │ false                                                                                                                                                                                                                                               │
 │                 four │ 0                    │ abc                                                                                                                                                                                                                          │
@@ -3623,7 +3904,7 @@ test message
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  one │ null                                                                                                                                                                                                                                                │
 │                  two │ true                                                                                                                                                                                                                                                │
 │                three │ false                                                                                                                                                                                                                                               │
 │                 four │ 0                    │ abc                                                                                                                                                                                                                          │
@@ -3726,7 +4007,7 @@ test message
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ Context                                                                                                                                                                                                                                                                    │
 ├──────────────────────┼──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                  one │ NULL                                                                                                                                                                                                                                                │
+│                  one │ null                                                                                                                                                                                                                                                │
 │                  two │ true                                                                                                                                                                                                                                                │
 │                three │ false                                                                                                                                                                                                                                               │
 │            four five │ 0                    │ abc                                                                                                                                                                                                                          │
