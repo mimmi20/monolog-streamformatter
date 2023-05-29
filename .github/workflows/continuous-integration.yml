@@ -160,7 +160,7 @@ jobs:
       - name: "Run mutation tests with infection/infection"
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
-        run: "vendor/bin/infection --show-mutations --only-covered --min-covered-msi=94 --min-msi=94 --coverage=.build/coverage --logger-github --no-progress -vv"
+        run: "vendor/bin/infection --show-mutations --only-covered --min-covered-msi=97 --min-msi=97 --coverage=.build/coverage --logger-github --no-progress -vv"
 
   # This is a meta job to avoid to have to constantly change the protection rules
   # whenever we touch the matrix.
