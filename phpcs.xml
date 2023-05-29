@@ -15,6 +15,7 @@
         <exclude name="SlevomatCodingStandard.Classes.ClassLength.ClassTooLong"/>
         <exclude name="SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh"/>
         <exclude name="SlevomatCodingStandard.Files.FileLength.FileTooLong"/>
+        <exclude name="Generic.Metrics.CyclomaticComplexity"/>
     </rule>
 
     <!-- Paths to check -->

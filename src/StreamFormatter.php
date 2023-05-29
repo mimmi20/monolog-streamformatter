@@ -12,7 +12,6 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Monolog\Formatter;
 
-use DateTimeImmutable;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
@@ -28,16 +27,11 @@ use Throwable;
 use function array_keys;
 use function count;
 use function is_array;
-use function is_bool;
-use function is_iterable;
 use function is_scalar;
 use function is_string;
-use function mb_strpos;
 use function str_repeat;
 use function str_replace;
 use function trim;
-use function ucfirst;
-use function var_export;
 
 final class StreamFormatter extends NormalizerFormatter
 {
@@ -128,10 +122,6 @@ final class StreamFormatter extends NormalizerFormatter
      */
     public function format(LogRecord $record): string
     {
-        /** @var array<(array|scalar|null)>|scalar|null $vars */
-        /** @phpstan-var array{message: string, context: array<mixed>, level: Level, level_name: string, channel: string, datetime: DateTimeImmutable, extra: array<mixed>} $vars */
-        $vars = $this->normalizeRecord($record);
-
         $message = $this->getFormatter()->format($record);
 
         $levelName = Level::fromValue($record->level->value)->getName();
@@ -172,65 +162,8 @@ final class StreamFormatter extends NormalizerFormatter
             ],
         );
 
-        foreach (['extra', 'context'] as $element) {
-            if (empty($vars[$element]) || !is_iterable($vars[$element])) {
-                continue;
-            }
-
-            $this->table->addRow(new TableSeparator());
-            $this->table->addRow(
-                [new TableCell(ucfirst($element), ['colspan' => self::SPAN_ALL_COLUMS])],
-            );
-            $this->table->addRow(new TableSeparator());
-
-            foreach ($vars[$element] as $key => $value) {
-                if (!is_string($key)) {
-                    continue;
-                }
-
-                if (
-                    is_array($record->{$element})
-                    && isset($record->{$element}[$key])
-                    && $record->{$element}[$key] instanceof Throwable
-                ) {
-                    $exception = $record->{$element}[$key];
-
-                    $value = [
-                        'Code' => $exception->getCode(),
-                        'File' => $exception->getFile(),
-                        'Line' => $exception->getLine(),
-                        'Message' => $exception->getMessage(),
-                        'Trace' => $exception->getTraceAsString(),
-                        'Type' => $exception::class,
-                    ];
-
-                    $this->addFact($key, $value);
-
-                    $prev = $exception->getPrevious();
-
-                    if ($prev instanceof Throwable) {
-                        do {
-                            $value = [
-                                'Code' => $prev->getCode(),
-                                'File' => $prev->getFile(),
-                                'Line' => $prev->getLine(),
-                                'Message' => $prev->getMessage(),
-                                'Trace' => $prev->getTraceAsString(),
-                                'Type' => $prev::class,
-                            ];
-
-                            $this->addFact('previous Throwable', $value);
-
-                            $prev = $prev->getPrevious();
-                        } while ($prev instanceof Throwable);
-                    }
-
-                    continue;
-                }
-
-                $this->addFact($key, $value);
-            }
-        }
+        $this->addExtra($record->extra);
+        $this->addContext($record->context);
 
         $this->table->render();
 
@@ -272,38 +205,98 @@ final class StreamFormatter extends NormalizerFormatter
         return $this->formatter;
     }
 
-    /** @throws RuntimeException if encoding fails and errors are not ignored */
-    private function stringify(mixed $value): string
+    /**
+     * @param array<mixed> $context
+     *
+     * @throws RuntimeException
+     */
+    private function addContext(array $context): void
     {
-        return $this->replaceNewlines($this->convertToString($value));
-    }
-
-    /** @throws RuntimeException if encoding fails and errors are not ignored */
-    private function convertToString(mixed $data): string
-    {
-        if ($data === null || is_bool($data)) {
-            return var_export($data, true);
+        if ($context === []) {
+            return;
         }
 
-        if (is_scalar($data)) {
-            return (string) $data;
-        }
+        $this->table->addRow(new TableSeparator());
+        $this->table->addRow(
+            [new TableCell('Context', ['colspan' => self::SPAN_ALL_COLUMS])],
+        );
+        $this->table->addRow(new TableSeparator());
 
-        return $this->toJson($data, true);
-    }
-
-    /** @throws void */
-    private function replaceNewlines(string $str): string
-    {
-        if ($this->allowInlineLineBreaks) {
-            if (mb_strpos($str, '{') === 0) {
-                return str_replace(['\r', '\n'], ["\r", "\n"], $str);
+        foreach ($context as $key => $value) {
+            if (!is_string($key)) {
+                continue;
             }
 
-            return $str;
+            $this->addFact($key, $this->normalize($value));
+        }
+    }
+
+    /**
+     * @param array<mixed> $extra
+     *
+     * @throws RuntimeException
+     */
+    private function addExtra(array $extra): void
+    {
+        if ($extra === []) {
+            return;
         }
 
-        return str_replace(["\r\n", "\r", "\n"], ' ', $str);
+        $this->table->addRow(new TableSeparator());
+        $this->table->addRow(
+            [new TableCell('Extra', ['colspan' => self::SPAN_ALL_COLUMS])],
+        );
+        $this->table->addRow(new TableSeparator());
+
+        foreach ($extra as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
+
+            if ($extra[$key] instanceof Throwable) {
+                $this->addThrowable($extra[$key]);
+
+                continue;
+            }
+
+            $this->addFact($key, $this->normalize($value));
+        }
+    }
+
+    /** @throws RuntimeException */
+    private function addThrowable(Throwable $exception): void
+    {
+        $value = [
+            'Code' => $exception->getCode(),
+            'File' => $exception->getFile(),
+            'Line' => $exception->getLine(),
+            'Message' => $exception->getMessage(),
+            'Trace' => $exception->getTraceAsString(),
+            'Type' => $exception::class,
+        ];
+
+        $this->addFact('Throwable', $value);
+
+        $prev = $exception->getPrevious();
+
+        if (!$prev instanceof Throwable) {
+            return;
+        }
+
+        do {
+            $value = [
+                'Code' => $prev->getCode(),
+                'File' => $prev->getFile(),
+                'Line' => $prev->getLine(),
+                'Message' => $prev->getMessage(),
+                'Trace' => $prev->getTraceAsString(),
+                'Type' => $prev::class,
+            ];
+
+            $this->addFact('previous Throwable', $value);
+
+            $prev = $prev->getPrevious();
+        } while ($prev instanceof Throwable);
     }
 
     /** @throws RuntimeException if encoding fails and errors are not ignored */
@@ -315,11 +308,7 @@ final class StreamFormatter extends NormalizerFormatter
             $rowspan = count($value);
 
             foreach (array_keys($value) as $number => $key) {
-                $cellValue = $value[$key];
-
-                if (!is_string($cellValue)) {
-                    $cellValue = $this->stringify($cellValue);
-                }
+                $cellValue = $this->stringify($value[$key]);
 
                 if ($number === 0) {
                     $this->table->addRow(
@@ -341,17 +330,17 @@ final class StreamFormatter extends NormalizerFormatter
                             ),
                         ],
                     );
-                } else {
-                    $this->table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
+
+                    continue;
                 }
+
+                $this->table->addRow([new TableCell((string) $key), new TableCell($cellValue)]);
             }
 
             return;
         }
 
-        if (!is_string($value)) {
-            $value = $this->stringify($value);
-        }
+        $value = $this->stringify($value);
 
         $this->table->addRow(
             [
@@ -362,5 +351,51 @@ final class StreamFormatter extends NormalizerFormatter
                 ),
             ],
         );
+    }
+
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function stringify(mixed $value): string
+    {
+        return $this->replaceNewlines($this->convertToString($value));
+    }
+
+    /** @throws RuntimeException if encoding fails and errors are not ignored */
+    private function convertToString(mixed $data): string
+    {
+        if (is_string($data)) {
+            return $data;
+        }
+
+        if ($data === null) {
+            return 'null';
+        }
+
+        if ($data === true) {
+            return 'true';
+        }
+
+        if ($data === false) {
+            return 'false';
+        }
+
+        if (is_scalar($data)) {
+            return (string) $data;
+        }
+
+        return $this->toJson($data, true);
+    }
+
+    /** @throws void */
+    private function replaceNewlines(string $str): string
+    {
+        if ($this->allowInlineLineBreaks) {
+            return str_replace(
+                ['\\\\r\\\\n', '\\r\\n', '\\\\r', '\\r', '\\\\n', '\\n', "\r\n", "\r"],
+                "\n",
+                $str,
+            );
+        }
+
+        return str_replace(["\r\n", "\r", "\n"], ' ', $str);
     }
 }

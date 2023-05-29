@@ -50,4 +50,35 @@ final class ConfigProviderTest extends TestCase
         self::assertIsArray($factories);
         self::assertCount(1, $factories);
     }
+
+    /** @throws Exception */
+    public function testInvoke(): void
+    {
+        $config = ($this->provider)();
+        self::assertIsArray($config);
+        self::assertCount(1, $config);
+
+        self::assertArrayHasKey('monolog_formatters', $config);
+
+        $monologFormatterConfig = $config['monolog_formatters'];
+        self::assertIsArray($monologFormatterConfig);
+        self::assertCount(2, $monologFormatterConfig);
+
+        self::assertArrayNotHasKey('abstract_factories', $monologFormatterConfig);
+        self::assertArrayNotHasKey('delegators', $monologFormatterConfig);
+        self::assertArrayNotHasKey('initializers', $monologFormatterConfig);
+        self::assertArrayNotHasKey('invokables', $monologFormatterConfig);
+        self::assertArrayNotHasKey('services', $monologFormatterConfig);
+        self::assertArrayNotHasKey('shared', $monologFormatterConfig);
+
+        self::assertArrayHasKey('aliases', $monologFormatterConfig);
+        $aliases = $monologFormatterConfig['aliases'];
+        self::assertIsArray($aliases);
+        self::assertCount(1, $aliases);
+
+        self::assertArrayHasKey('factories', $monologFormatterConfig);
+        $factories = $monologFormatterConfig['factories'];
+        self::assertIsArray($factories);
+        self::assertCount(1, $factories);
+    }
 }
