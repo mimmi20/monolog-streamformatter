@@ -78,7 +78,7 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::never())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table);
+        $formatter = new StreamFormatter(output: $output, table: $table);
 
         self::assertSame(NormalizerFormatter::SIMPLE_DATE, $formatter->getDateFormat());
         self::assertSame(9, $formatter->getMaxNormalizeDepth());
@@ -144,13 +144,13 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            $format,
-            $tableStyle,
-            $dateFormat,
-            true,
-            false,
+            output: $output,
+            table: $table,
+            format: $format,
+            tableStyle: $tableStyle,
+            dateFormat: $dateFormat,
+            allowInlineLineBreaks: true,
+            includeStacktraces: false,
         );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
@@ -217,13 +217,13 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            $format,
-            $tableStyle,
-            $dateFormat,
-            false,
-            true,
+            output: $output,
+            table: $table,
+            format: $format,
+            tableStyle: $tableStyle,
+            dateFormat: $dateFormat,
+            allowInlineLineBreaks: false,
+            includeStacktraces: true,
         );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
@@ -290,13 +290,13 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            $format,
-            $tableStyle,
-            $dateFormat,
-            false,
-            false,
+            output: $output,
+            table: $table,
+            format: $format,
+            tableStyle: $tableStyle,
+            dateFormat: $dateFormat,
+            allowInlineLineBreaks: false,
+            includeStacktraces: false,
         );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
@@ -369,13 +369,13 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            $format,
-            $tableStyle,
-            $dateFormat,
-            true,
-            false,
+            output: $output,
+            table: $table,
+            format: $format,
+            tableStyle: $tableStyle,
+            dateFormat: $dateFormat,
+            allowInlineLineBreaks: true,
+            includeStacktraces: false,
         );
 
         self::assertSame($dateFormat, $formatter->getDateFormat());
@@ -529,7 +529,7 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table);
+        $formatter = new StreamFormatter(output: $output, table: $table);
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -690,7 +690,7 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table);
+        $formatter = new StreamFormatter(output: $output, table: $table);
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -851,7 +851,11 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.two% %extra.app%');
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: '%message% %context.two% %extra.app%',
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1012,7 +1016,11 @@ final class StreamFormatterTest extends TestCase
         $table->expects(self::once())
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table, '%message% %context.four% %extra.app%');
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: '%message% %context.four% %extra.app%',
+        );
 
         $record = new LogRecord(
             datetime: $datetime,
@@ -1175,12 +1183,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.five% %extra.app%',
-            $tableStyle,
-            null,
-            false,
+            output: $output,
+            table: $table,
+            format: '%message% %context.five% %extra.app%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: false,
         );
 
         $record = new LogRecord(
@@ -1344,12 +1352,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.five% %extra.app%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.five% %extra.app%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -1597,12 +1605,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.five% <%extra.Exception%>',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.five% <%extra.Exception%>',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -1837,12 +1845,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.five% %extra.app%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.five% %extra.app%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -2216,12 +2224,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.five% %extra.app%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.five% %extra.app%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -2598,12 +2606,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% context.one %context.five% %extra.app% extra.Exception',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% context.one %context.five% %extra.app% extra.Exception',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -2769,12 +2777,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -2942,12 +2950,12 @@ final class StreamFormatterTest extends TestCase
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -3023,12 +3031,12 @@ this is a formatted message
         $table  = new Table($output);
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -3103,12 +3111,12 @@ this is a formatted message
         $table  = new Table($output);
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -3328,7 +3336,14 @@ this is a formatted message
                         assert($tableCell2 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell2);
-                        self::assertSame($message3, (string) $tableCell2);
+                        self::assertSame(
+                            str_replace(
+                                ['\\\\r\\\\n', '\\\r\\\n', '\\r\\n', '\r\n', '\\\\r', '\\\r', '\\r', '\r', '\\\\n', '\\\n', '\\n', '\n', "\r\n", "\r"],
+                                "\n",
+                                $message3,
+                            ),
+                            (string) $tableCell2,
+                        );
 
                         return $table;
                     }
@@ -3360,7 +3375,14 @@ this is a formatted message
                         assert($tableCell2 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell2);
-                        self::assertSame($message2, (string) $tableCell2);
+                        self::assertSame(
+                            str_replace(
+                                ['\\\\r\\\\n', '\\\r\\\n', '\\r\\n', '\r\n', '\\\\r', '\\\r', '\\r', '\r', '\\\\n', '\\\n', '\\n', '\n'],
+                                "\n",
+                                $message2,
+                            ),
+                            (string) $tableCell2,
+                        );
 
                         return $table;
                     }
@@ -3372,12 +3394,12 @@ this is a formatted message
             ->method('render');
 
         $formatter = new StreamFormatter(
-            $output,
-            $table,
-            '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
-            $tableStyle,
-            null,
-            true,
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
         );
 
         $record = new LogRecord(
@@ -3402,6 +3424,182 @@ this is a formatted message
         $formatted = $formatter->format($record);
 
         self::assertSame($expected, $formatted);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormat16(): void
+    {
+        $message1         = 'test message\rtest message 2\ntest message 3\r\ntest message 4';
+        $message2         = 'test message 5\rtest message 6\ntest message 7\r\ntest message 8';
+        $message3         = "test1\ntest2\rtest3\r\ntest4";
+        $channel          = 'test-channel';
+        $tableStyle       = 'default';
+        $datetime         = new DateTimeImmutable('now');
+        $formattedMessage = 'this is a formatted message';
+        $stdClass         = new stdClass();
+        $stdClass->a      = $channel;
+        $stdClass->b      = $message1;
+        $level            = Level::Error;
+        $appName          = 'test-app';
+
+        $expected = <<<TXT
+            ==============================================================================================================================================================================================================================================================================
+
+            this is a formatted message
+
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | General Info                                                                                                                                                                                                                                                               |
+            |                 Time | {$datetime->format(NormalizerFormatter::SIMPLE_DATE)}                                                                                                                                                                                                                           |
+            |                Level | ERROR                                                                                                                                                                                                                                               |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | Extra                                                                                                                                                                                                                                                                      |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            |                  app | test-app                                                                                                                                                                                                                                            |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | Context                                                                                                                                                                                                                                                                    |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            |                  one | null                                                                                                                                                                                                                                                |
+            |                 five | test1 test2 test3 test4                                                                                                                                                                                                                             |
+            |                  six | stdClass             | {"a":"test-channel","b":"test message\\\\rtest message 2\\\\ntest message 3\\\\r\\\\ntest message 4"}                                                                                                                                |
+            |                seven | test message 5\\rtest message 6\\ntest mes                                                                                                                                                                                                            |
+            |                      | sage 7\\r\\ntest message 8                                                                                                                                                                                                                            |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+            TXT;
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: false,
+        );
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: $level,
+            message: $message1,
+            context: ['one' => null, 'five' => $message3, 'six' => $stdClass, 'seven' => $message2],
+            extra: ['app' => $appName],
+        );
+
+        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lineFormatter->expects(self::once())
+            ->method('format')
+            ->with($record)
+            ->willReturn($formattedMessage);
+
+        $formatter->setFormatter($lineFormatter);
+
+        $formatted = $formatter->format($record);
+
+        self::assertSame(
+            str_replace(["\r\n", "\r"], "\n", $expected),
+            str_replace(["\r\n", "\r"], "\n", $formatted),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
+    public function testFormat17(): void
+    {
+        $message1         = 'test message\rtest message 2\ntest message 3\r\ntest message 4';
+        $message2         = 'test message 5\rtest message 6\ntest message 7\r\ntest message 8';
+        $message3         = "test1\ntest2\rtest3\r\ntest4";
+        $channel          = 'test-channel';
+        $tableStyle       = 'default';
+        $datetime         = new DateTimeImmutable('now');
+        $formattedMessage = 'this is a formatted message';
+        $stdClass         = new stdClass();
+        $stdClass->a      = $channel;
+        $stdClass->b      = $message1;
+        $level            = Level::Error;
+        $appName          = 'test-app';
+
+        $expected = <<<TXT
+            ==============================================================================================================================================================================================================================================================================
+
+            this is a formatted message
+
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | General Info                                                                                                                                                                                                                                                               |
+            |                 Time | {$datetime->format(NormalizerFormatter::SIMPLE_DATE)}                                                                                                                                                                                                                           |
+            |                Level | ERROR                                                                                                                                                                                                                                               |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | Extra                                                                                                                                                                                                                                                                      |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            |                  app | test-app                                                                                                                                                                                                                                            |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            | Context                                                                                                                                                                                                                                                                    |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+            |                  one | null                                                                                                                                                                                                                                                |
+            |                 five | test1                                                                                                                                                                                                                                               |
+            |                      | test2                                                                                                                                                                                                                                               |
+            |                      | test3                                                                                                                                                                                                                                               |
+            |                      | test4                                                                                                                                                                                                                                               |
+            |                  six | stdClass             | {"a":"test-channel","b":"test message                                                                                                                                                                                        |
+            |                      |                      | test message 2                                                                                                                                                                                                               |
+            |                      |                      | test message 3                                                                                                                                                                                                               |
+            |                      |                      | test message 4"}                                                                                                                                                                                                             |
+            |                seven | test message 5                                                                                                                                                                                                                                      |
+            |                      | test message 6                                                                                                                                                                                                                                      |
+            |                      | test message 7                                                                                                                                                                                                                                      |
+            |                      | test message 8                                                                                                                                                                                                                                      |
+            +----------------------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+            TXT;
+
+        $output = new BufferedOutput();
+        $table  = new Table($output);
+
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
+            tableStyle: $tableStyle,
+            dateFormat: null,
+            allowInlineLineBreaks: true,
+        );
+
+        $record = new LogRecord(
+            datetime: $datetime,
+            channel: $channel,
+            level: $level,
+            message: $message1,
+            context: ['one' => null, 'five' => $message3, 'six' => $stdClass, 'seven' => $message2],
+            extra: ['app' => $appName],
+        );
+
+        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lineFormatter->expects(self::once())
+            ->method('format')
+            ->with($record)
+            ->willReturn($formattedMessage);
+
+        $formatter->setFormatter($lineFormatter);
+
+        $formatted = $formatter->format($record);
+
+        self::assertSame(
+            str_replace(["\r\n", "\r"], "\n", $expected),
+            str_replace(["\r\n", "\r"], "\n", $formatted),
+        );
     }
 
     /**
@@ -3732,7 +3930,7 @@ this is a formatted message
         $table->expects(self::exactly(3))
             ->method('render');
 
-        $formatter = new StreamFormatter($output, $table);
+        $formatter = new StreamFormatter(output: $output, table: $table);
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
@@ -3810,8 +4008,7 @@ test message
 │                three │ false                                                                                                                                                                                                                                               │
 │                 four │ 0                    │ abc                                                                                                                                                                                                                          │
 │                      │ 1                    │ xyz                                                                                                                                                                                                                          │
-│                 five │ test                                                                                                                                                                                                                                                │
-│                      │ test                                                                                                                                                                                                                                                │
+│                 five │ test test                                                                                                                                                                                                                                           │
 └──────────────────────┴──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 ';
@@ -3844,7 +4041,12 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: null,
+            tableStyle: $tableStyle,
+        );
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
@@ -3947,7 +4149,12 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: null,
+            tableStyle: $tableStyle,
+        );
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
@@ -4050,7 +4257,12 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter($output, $table, null, $tableStyle);
+        $formatter = new StreamFormatter(
+            output: $output,
+            table: $table,
+            format: null,
+            tableStyle: $tableStyle,
+        );
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 

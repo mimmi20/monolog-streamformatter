@@ -31,7 +31,6 @@ use function is_scalar;
 use function is_string;
 use function str_repeat;
 use function str_replace;
-use function str_starts_with;
 use function trim;
 
 final class StreamFormatter extends NormalizerFormatter
@@ -309,11 +308,7 @@ final class StreamFormatter extends NormalizerFormatter
             $rowspan = count($value);
 
             foreach (array_keys($value) as $number => $key) {
-                $cellValue = $value[$key];
-
-                if (!is_string($cellValue)) {
-                    $cellValue = $this->stringify($cellValue);
-                }
+                $cellValue = $this->stringify($value[$key]);
 
                 if ($number === 0) {
                     $this->table->addRow(
@@ -345,9 +340,7 @@ final class StreamFormatter extends NormalizerFormatter
             return;
         }
 
-        if (!is_string($value)) {
-            $value = $this->stringify($value);
-        }
+        $value = $this->stringify($value);
 
         $this->table->addRow(
             [
@@ -396,11 +389,11 @@ final class StreamFormatter extends NormalizerFormatter
     private function replaceNewlines(string $str): string
     {
         if ($this->allowInlineLineBreaks) {
-            if (str_starts_with($str, '{')) {
-                return str_replace(['\r\n', '\r', '\n'], ["\r\n", "\r", "\n"], $str);
-            }
-
-            return $str;
+            return str_replace(
+                ['\\\\r\\\\n', '\\\r\\\n', '\\r\\n', '\r\n', '\\\\r', '\\\r', '\\r', '\r', '\\\\n', '\\\n', '\\n', '\n', "\r\n", "\r"],
+                "\n",
+                $str,
+            );
         }
 
         return str_replace(["\r\n", "\r", "\n"], ' ', $str);
