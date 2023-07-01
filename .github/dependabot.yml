@@ -17,6 +17,7 @@ updates:
       - "mimmi20"
     labels:
       - "dependencies"
+      - "patch"
     versioning-strategy: "increase"
     target-branch: "master"
     commit-message:
@@ -44,7 +45,7 @@ updates:
       - "mimmi20"
     labels:
       - "dependencies"
+      - "patch"
     target-branch: "master"
     commit-message:
-      include: "scope"
       prefix: "github-actions"
