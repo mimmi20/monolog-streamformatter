@@ -3,25 +3,26 @@
 version: 2
 
 updates:
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "04:00"
-      timezone: "Europe/Berlin"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "mimmi20"
-    assignees:
-      - "mimmi20"
-    labels:
-      - "dependencies"
-    versioning-strategy: "increase"
-    target-branch: "master"
-    commit-message:
-      include: "scope"
-      prefix: "composer"
+#  - package-ecosystem: "composer"
+#    directory: "/"
+#    schedule:
+#      interval: "weekly"
+#      day: "friday"
+#      time: "04:00"
+#      timezone: "Europe/Berlin"
+#    open-pull-requests-limit: 10
+#    reviewers:
+#      - "mimmi20"
+#    assignees:
+#      - "mimmi20"
+#    labels:
+#      - "dependencies"
+#      - "patch"
+#    versioning-strategy: "increase"
+#    target-branch: "master"
+#    commit-message:
+#      include: "scope"
+#      prefix: "composer"
 #    ignore:
 #      - dependency-name: infection/infection
 #        versions:
@@ -44,7 +45,7 @@ updates:
       - "mimmi20"
     labels:
       - "dependencies"
+      - "patch"
     target-branch: "master"
     commit-message:
-      include: "scope"
       prefix: "github-actions"

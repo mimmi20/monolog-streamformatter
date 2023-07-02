@@ -3,7 +3,7 @@
 
   "extends": ["github>whitesource/merge-confidence:beta"],
 
-  "enabled": false,
+  "enabled": true,
   "assignees": [
     "mimmi20"
   ],
@@ -11,7 +11,7 @@
   "commitBody": "Signed-off-by: {{{gitAuthor}}}",
   "commitBodyTable": true,
   "dependencyDashboard": false,
-  "enabledManagers": ["composer", "github-actions", "npm"],
+  "enabledManagers": ["composer", "npm"],
   "ignoreUnstable": true,
   "labels": [
     "dependencies"
@@ -39,7 +39,7 @@
     "mimmi20"
   ],
   "rollbackPrs": true,
-  "schedule": ["before 3am"],
+  "schedule": ["at 4:00 pm on Friday"],
   "semanticCommits": "disabled",
   "separateMajorMinor": true,
   "separateMinorPatch": false,
