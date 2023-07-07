@@ -11,10 +11,11 @@
   "commitBody": "Signed-off-by: {{{gitAuthor}}}",
   "commitBodyTable": true,
   "dependencyDashboard": false,
-  "enabledManagers": ["composer", "npm"],
+  "enabledManagers": ["composer", "github-actions", "npm"],
   "ignoreUnstable": true,
   "labels": [
-    "dependencies"
+    "dependencies",
+    "patch"
   ],
   "lockFileMaintenance": {
     "enabled": false
@@ -43,7 +44,7 @@
   "semanticCommits": "disabled",
   "separateMajorMinor": true,
   "separateMinorPatch": false,
-  "timezone": "UTC",
+  "timezone": "Europe/Berlin",
   "updateLockFiles": false,
   "updateNotScheduled": false,
   "packageRules": [
