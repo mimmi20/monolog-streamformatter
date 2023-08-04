@@ -57,12 +57,16 @@ final class StreamFormatter5Test extends TestCase
 
         $expected = 'rendered-content';
 
-        $output = $this->getMockBuilder(BufferedOutput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $output->expects(self::exactly(2))
+        $output  = $this->createMock(BufferedOutput::class);
+        $matcher = self::exactly(2);
+        $output->expects($matcher)
             ->method('fetch')
-            ->willReturnOnConsecutiveCalls('', $expected);
+            ->willReturnCallback(
+                static fn (): string => match ($matcher->numberOfInvocations()) {
+                        1 => '',
+                        default => $expected,
+                },
+            );
         $matcher = self::exactly(5);
         $output->expects($matcher)
             ->method('writeln')
@@ -77,9 +81,7 @@ final class StreamFormatter5Test extends TestCase
                 },
             );
 
-        $table = $this->getMockBuilder(Table::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $table = $this->createMock(Table::class);
         $table->expects(self::once())
             ->method('setStyle')
             ->with($tableStyle)
@@ -301,9 +303,7 @@ final class StreamFormatter5Test extends TestCase
             extra: ['app' => $appName],
         );
 
-        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lineFormatter = $this->createMock(LineFormatter::class);
         $lineFormatter->expects(self::once())
             ->method('format')
             ->with($record)
@@ -382,9 +382,7 @@ final class StreamFormatter5Test extends TestCase
             extra: ['app' => $appName],
         );
 
-        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lineFormatter = $this->createMock(LineFormatter::class);
         $lineFormatter->expects(self::once())
             ->method('format')
             ->with($record)
@@ -474,9 +472,7 @@ final class StreamFormatter5Test extends TestCase
             extra: ['app' => $appName],
         );
 
-        $lineFormatter = $this->getMockBuilder(LineFormatter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lineFormatter = $this->createMock(LineFormatter::class);
         $lineFormatter->expects(self::once())
             ->method('format')
             ->with($record)
@@ -535,12 +531,18 @@ final class StreamFormatter5Test extends TestCase
             extra: ['app' => 'test-app'],
         );
 
-        $output = $this->getMockBuilder(BufferedOutput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $output->expects(self::exactly(6))
+        $output  = $this->createMock(BufferedOutput::class);
+        $matcher = self::exactly(6);
+        $output->expects($matcher)
             ->method('fetch')
-            ->willReturnOnConsecutiveCalls('', $expected1, '', $expected2, '', $expected3);
+            ->willReturnCallback(
+                static fn (): string => match ($matcher->numberOfInvocations()) {
+                        2 => $expected1,
+                        4 => $expected2,
+                        6 => $expected3,
+                        default => '',
+                },
+            );
         $matcher = self::exactly(15);
         $output->expects($matcher)
             ->method('writeln')
@@ -567,9 +569,7 @@ final class StreamFormatter5Test extends TestCase
                 },
             );
 
-        $table = $this->getMockBuilder(Table::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $table = $this->createMock(Table::class);
         $table->expects(self::once())
             ->method('setStyle')
             ->with($tableStyle)

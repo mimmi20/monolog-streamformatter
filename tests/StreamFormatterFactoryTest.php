@@ -31,9 +31,7 @@ final class StreamFormatterFactoryTest extends TestCase
      */
     public function testInvokeWithoutConfig(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('has');
         $container->expects(self::never())
@@ -98,9 +96,7 @@ final class StreamFormatterFactoryTest extends TestCase
      */
     public function testInvokeWithEmptyConfig(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('has');
         $container->expects(self::never())
@@ -173,9 +169,7 @@ final class StreamFormatterFactoryTest extends TestCase
         $include               = true;
         $tableStyle            = 'borderless';
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('has');
         $container->expects(self::never())
