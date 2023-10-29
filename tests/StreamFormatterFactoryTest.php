@@ -12,6 +12,7 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Monolog\Formatter;
 
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Mimmi20\Monolog\Formatter\StreamFormatter;
 use Mimmi20\Monolog\Formatter\StreamFormatterFactory;
 use Monolog\Formatter\NormalizerFormatter;
@@ -28,6 +29,7 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws ServiceNotCreatedException
      */
     public function testInvokeWithoutConfig(): void
     {
@@ -93,6 +95,7 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws ServiceNotCreatedException
      */
     public function testInvokeWithEmptyConfig(): void
     {
@@ -158,6 +161,7 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws ServiceNotCreatedException
      */
     public function testInvokeWithConfig(): void
     {
