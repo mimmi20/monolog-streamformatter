@@ -162,8 +162,8 @@ final class StreamFormatter extends NormalizerFormatter
             ],
         );
 
-        $this->addExtra($record->extra);
-        $this->addContext($record->context);
+        $this->addExtraData($record->extra, 'Extra');
+        $this->addExtraData($record->context, 'Context');
 
         $this->table->render();
 
@@ -206,55 +206,29 @@ final class StreamFormatter extends NormalizerFormatter
     }
 
     /**
-     * @param array<mixed> $context
+     * @param array<mixed> $extraData
      *
      * @throws RuntimeException
      */
-    private function addContext(array $context): void
+    private function addExtraData(array $extraData, string $title): void
     {
-        if ($context === []) {
+        if ($extraData === []) {
             return;
         }
 
         $this->table->addRow(new TableSeparator());
         $this->table->addRow(
-            [new TableCell('Context', ['colspan' => self::SPAN_ALL_COLUMS])],
+            [new TableCell($title, ['colspan' => self::SPAN_ALL_COLUMS])],
         );
         $this->table->addRow(new TableSeparator());
 
-        foreach ($context as $key => $value) {
+        foreach ($extraData as $key => $value) {
             if (!is_string($key)) {
                 continue;
             }
 
-            $this->addFact($key, $this->normalize($value));
-        }
-    }
-
-    /**
-     * @param array<mixed> $extra
-     *
-     * @throws RuntimeException
-     */
-    private function addExtra(array $extra): void
-    {
-        if ($extra === []) {
-            return;
-        }
-
-        $this->table->addRow(new TableSeparator());
-        $this->table->addRow(
-            [new TableCell('Extra', ['colspan' => self::SPAN_ALL_COLUMS])],
-        );
-        $this->table->addRow(new TableSeparator());
-
-        foreach ($extra as $key => $value) {
-            if (!is_string($key)) {
-                continue;
-            }
-
-            if ($extra[$key] instanceof Throwable) {
-                $this->addThrowable($extra[$key]);
+            if ($value instanceof Throwable) {
+                $this->addThrowable($value);
 
                 continue;
             }
