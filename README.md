@@ -12,17 +12,11 @@
 
 ## Installation
 
-:bulb: This is a great place for showing how to install the package, see below:
-
 Run
 
 ```shell
 composer require mimmi20/monolog-streamformatter
 ```
-
-## Usage
-
-:bulb: This is a great place for showing a few usage examples!
 
 ## License
 
