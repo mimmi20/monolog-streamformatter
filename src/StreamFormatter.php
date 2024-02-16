@@ -364,7 +364,7 @@ final class StreamFormatter extends NormalizerFormatter
     {
         if ($this->allowInlineLineBreaks) {
             return str_replace(
-                ['\\\\r\\\\n', '\\r\\n', '\\\\r', '\\r', '\\\\n', '\\n', "\r\n", "\r"],
+                ['\\\r\\\n', '\r\n', '\\\r', '\r', '\\\n', '\n', "\r\n", "\r"],
                 "\n",
                 $str,
             );
