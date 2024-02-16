@@ -3338,7 +3338,7 @@ this is a formatted message
                         self::assertInstanceOf(TableCell::class, $tableCell2);
                         self::assertSame(
                             str_replace(
-                                ['\\\\r\\\\n', '\\r\\n', '\\\\r', '\\r', '\\\\n', '\\n', "\r\n", "\r"],
+                                ['\\\r\\\n', '\r\n', '\\\r', '\r', '\\\n', '\n', "\r\n", "\r"],
                                 "\n",
                                 $message3,
                             ),
@@ -3377,7 +3377,7 @@ this is a formatted message
                         self::assertInstanceOf(TableCell::class, $tableCell2);
                         self::assertSame(
                             str_replace(
-                                ['\\\\r\\\\n', '\\r\\n', '\\\\r', '\\r', '\\\\n', '\\n', "\r\n", "\r"],
+                                ['\\\r\\\n', '\r\n', '\\\r', '\r', '\\\n', '\n', "\r\n", "\r"],
                                 "\n",
                                 $message2,
                             ),
