@@ -19,6 +19,7 @@
     "php": "^8.1.0",
     "ext-mbstring": "*",
     "monolog/monolog": "^3.5.0",
+    "psr/container": "^1.1.2 || ^2.0.2",
     "symfony/console": "^v6.4.4"
   },
   "require-dev": {

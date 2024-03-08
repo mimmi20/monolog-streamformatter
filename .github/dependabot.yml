@@ -49,6 +49,9 @@ updates:
       prefix: "composer"
 
     ignore:
+      - dependency-name: "psr/container"
+        versions:
+          - ">= 0"
       - dependency-name: "laminas/laminas-servicemanager"
         versions:
           - ">= 0"
