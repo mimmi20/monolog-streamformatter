@@ -25,8 +25,10 @@ use function sprintf;
 
 final class StreamFormatterFactory implements FactoryInterface
 {
+    /** @api */
     public const DEFAULT_NORMALIZER_DEPTH = 9;
 
+    /** @api */
     public const DEFAULT_NORMALIZER_ITEM_COUNT = 1000;
 
     /**

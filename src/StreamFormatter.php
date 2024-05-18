@@ -35,20 +35,28 @@ use function trim;
 
 final class StreamFormatter extends NormalizerFormatter
 {
+    /** @api */
     public const SIMPLE_FORMAT = '%message%';
 
+    /** @api */
     public const BOX_STYLE = 'box';
 
+    /** @api */
     public const WIDTH_FIRST_COLUMN = 20;
 
+    /** @api */
     public const WIDTH_SECOND_COLUMN = 20;
 
+    /** @api */
     public const WIDTH_THIRD_COLUMN = 220;
 
+    /** @api */
     public const FULL_WIDTH = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
 
+    /** @api */
     public const SPAN_ALL_COLUMS = 3;
 
+    /** @api */
     public const SPAN_LAST_COLUMNS = 2;
 
     private readonly string $format;
@@ -87,7 +95,11 @@ final class StreamFormatter extends NormalizerFormatter
         );
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function includeStacktraces(bool $include = true): self
     {
         $this->includeStacktraces = $include;
@@ -99,7 +111,11 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function allowInlineLineBreaks(bool $allow = true): self
     {
         $this->allowInlineLineBreaks = $allow;
@@ -107,7 +123,11 @@ final class StreamFormatter extends NormalizerFormatter
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function setFormatter(LineFormatter $formatter): void
     {
         $this->formatter = $formatter;
