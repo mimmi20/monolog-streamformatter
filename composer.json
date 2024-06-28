@@ -33,7 +33,7 @@
     "infection/infection": "^0.27.11 || ^0.28.1",
     "laminas/laminas-modulemanager": "^2.16.0",
     "laminas/laminas-servicemanager": "^3.22.1 || ^4.0.0",
-    "mimmi20/coding-standard": "^5.2.35",
+    "mimmi20/coding-standard": "^5.2.36",
     "nikic/php-parser": "^4.19.1 || ^5.0.2",
     "phpstan/extension-installer": "^1.4.1",
     "phpstan/phpstan": "^1.11.5",
