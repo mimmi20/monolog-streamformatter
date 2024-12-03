@@ -14,6 +14,7 @@ declare(strict_types = 1);
 namespace Mimmi20\Monolog\Formatter;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Override;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -24,10 +25,10 @@ use function is_array;
 final class StreamFormatterFactory implements FactoryInterface
 {
     /** @api */
-    public const DEFAULT_NORMALIZER_DEPTH = 9;
+    public const int DEFAULT_NORMALIZER_DEPTH = 9;
 
     /** @api */
-    public const DEFAULT_NORMALIZER_ITEM_COUNT = 1000;
+    public const int DEFAULT_NORMALIZER_ITEM_COUNT = 1000;
 
     /**
      * @param string                                $requestedName
@@ -39,6 +40,7 @@ final class StreamFormatterFactory implements FactoryInterface
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
+    #[Override]
     public function __invoke(
         ContainerInterface $container,
         $requestedName,
