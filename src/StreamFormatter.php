@@ -17,6 +17,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
+use Override;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -37,28 +38,28 @@ use function trim;
 final class StreamFormatter extends NormalizerFormatter
 {
     /** @api */
-    public const SIMPLE_FORMAT = '%message%';
+    public const string SIMPLE_FORMAT = '%message%';
 
     /** @api */
-    public const BOX_STYLE = 'box';
+    public const string BOX_STYLE = 'box';
 
     /** @api */
-    public const WIDTH_FIRST_COLUMN = 20;
+    public const int WIDTH_FIRST_COLUMN = 20;
 
     /** @api */
-    public const WIDTH_SECOND_COLUMN = 20;
+    public const int WIDTH_SECOND_COLUMN = 20;
 
     /** @api */
-    public const WIDTH_THIRD_COLUMN = 220;
+    public const int WIDTH_THIRD_COLUMN = 220;
 
     /** @api */
-    public const FULL_WIDTH = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
+    public const int FULL_WIDTH = self::WIDTH_FIRST_COLUMN + self::WIDTH_SECOND_COLUMN + self::WIDTH_THIRD_COLUMN + 10;
 
     /** @api */
-    public const SPAN_ALL_COLUMS = 3;
+    public const int SPAN_ALL_COLUMS = 3;
 
     /** @api */
-    public const SPAN_LAST_COLUMNS = 2;
+    public const int SPAN_LAST_COLUMNS = 2;
 
     private readonly string $format;
     private bool $allowInlineLineBreaks;
@@ -141,6 +142,7 @@ final class StreamFormatter extends NormalizerFormatter
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */
+    #[Override]
     public function format(LogRecord $record): string
     {
         $message = $this->getFormatter()->format($record);
@@ -199,6 +201,7 @@ final class StreamFormatter extends NormalizerFormatter
      *
      * @throws RuntimeException if encoding fails and errors are not ignored
      */
+    #[Override]
     public function formatBatch(array $records): string
     {
         $message = '';
