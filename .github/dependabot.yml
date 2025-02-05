@@ -31,7 +31,7 @@ updates:
 
     commit-message:
       include: "scope"
-      prefix: "composer"
+      prefix: "composer (master)"
 
     rebase-strategy: "auto"
 
@@ -58,7 +58,68 @@ updates:
     target-branch: "master"
 
     commit-message:
-      prefix: "github-actions"
+      prefix: "github-actions (master)"
+
+    ignore:
+      - dependency-name: "mimmi20/ci"
+      - dependency-name: "release-drafter/release-drafter"
+
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "composer"
+
+    directory: "/"
+
+    schedule:
+      interval: "daily"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    open-pull-requests-limit: 10
+
+    reviewers:
+      - "mimmi20"
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    versioning-strategy: "increase"
+
+    target-branch: "4.x"
+
+    commit-message:
+      include: "scope"
+      prefix: "composer (4.x)"
+
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "github-actions"
+
+    directory: "/"
+
+    schedule:
+      interval: "daily"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    open-pull-requests-limit: 10
+
+    reviewers:
+      - "mimmi20"
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    target-branch: "4.x"
+
+    commit-message:
+      prefix: "github-actions (4.x)"
 
     ignore:
       - dependency-name: "mimmi20/ci"
