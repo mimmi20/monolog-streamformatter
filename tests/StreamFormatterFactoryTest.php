@@ -16,6 +16,7 @@ namespace Mimmi20Test\Monolog\Formatter;
 use Mimmi20\Monolog\Formatter\StreamFormatter;
 use Mimmi20\Monolog\Formatter\StreamFormatterFactory;
 use Monolog\Formatter\NormalizerFormatter;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -29,6 +30,8 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvokeWithoutConfig(): void
     {
@@ -94,6 +97,8 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvokeWithEmptyConfig(): void
     {
@@ -159,6 +164,8 @@ final class StreamFormatterFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ReflectionException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvokeWithConfig(): void
     {
