@@ -45,6 +45,7 @@ final class StreamFormatterTest extends TestCase
      * @throws Exception
      * @throws ReflectionException
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConstructWithDefaults(): void
     {
@@ -102,6 +103,7 @@ final class StreamFormatterTest extends TestCase
      * @throws Exception
      * @throws ReflectionException
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConstructWithValues(): void
     {
@@ -171,6 +173,7 @@ final class StreamFormatterTest extends TestCase
      * @throws Exception
      * @throws ReflectionException
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConstructWithValues2(): void
     {
@@ -240,6 +243,7 @@ final class StreamFormatterTest extends TestCase
      * @throws Exception
      * @throws ReflectionException
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConstructWithValues3(): void
     {
@@ -315,6 +319,7 @@ final class StreamFormatterTest extends TestCase
      * @throws Exception
      * @throws ReflectionException
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConstructWithValues4(): void
     {
@@ -399,6 +404,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat(): void
     {
@@ -531,6 +537,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat2(): void
     {
@@ -694,6 +701,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat3(): void
     {
@@ -861,6 +869,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat4(): void
     {
@@ -1028,6 +1037,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat5(): void
     {
@@ -1199,6 +1209,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat6(): void
     {
@@ -1370,6 +1381,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat7(): void
     {
@@ -1625,6 +1637,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat8(): void
     {
@@ -1867,6 +1880,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat9(): void
     {
@@ -2248,6 +2262,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat10(): void
     {
@@ -2632,6 +2647,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat11(): void
     {
@@ -2805,6 +2821,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat12(): void
     {
@@ -2988,6 +3005,7 @@ final class StreamFormatterTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat13(): void
     {
@@ -3070,6 +3088,7 @@ this is a formatted message
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat14(): void
     {
@@ -3148,6 +3167,7 @@ this is a formatted message
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat15(): void
     {
@@ -3428,6 +3448,7 @@ this is a formatted message
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat16(): void
     {
@@ -3510,6 +3531,7 @@ this is a formatted message
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormat17(): void
     {
@@ -3600,6 +3622,7 @@ this is a formatted message
     /**
      * @throws Exception
      * @throws RuntimeException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFormatBatch(): void
     {

@@ -14,25 +14,15 @@ declare(strict_types = 1);
 namespace Mimmi20Test\Monolog\Formatter;
 
 use Mimmi20\Monolog\Formatter\ConfigProvider;
-use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
 {
-    private ConfigProvider $provider;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->provider = new ConfigProvider();
-    }
-
     /** @throws Exception */
     public function testGetMonologFormatterConfig(): void
     {
-        $monologFormatterConfig = $this->provider->getMonologFormatterConfig();
+        $monologFormatterConfig = (new ConfigProvider())->getMonologFormatterConfig();
         self::assertIsArray($monologFormatterConfig);
         self::assertCount(2, $monologFormatterConfig);
 
@@ -57,7 +47,7 @@ final class ConfigProviderTest extends TestCase
     /** @throws Exception */
     public function testInvoke(): void
     {
-        $config = ($this->provider)();
+        $config = (new ConfigProvider())();
         self::assertIsArray($config);
         self::assertCount(1, $config);
 
