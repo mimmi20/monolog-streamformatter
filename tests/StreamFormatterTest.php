@@ -421,8 +421,8 @@ final class StreamFormatterTest extends TestCase
             ->method('fetch')
             ->willReturnCallback(
                 static fn (): string => match ($matcher->numberOfInvocations()) {
-                        1 => '',
-                        default => $expected,
+                    1 => '',
+                    default => $expected,
                 },
             );
         $matcher = self::exactly(5);
@@ -554,8 +554,8 @@ final class StreamFormatterTest extends TestCase
             ->method('fetch')
             ->willReturnCallback(
                 static fn (): string => match ($matcher->numberOfInvocations()) {
-                        1 => '',
-                        default => $expected,
+                    1 => '',
+                    default => $expected,
                 },
             );
         $matcher = self::exactly(5);
@@ -718,8 +718,8 @@ final class StreamFormatterTest extends TestCase
             ->method('fetch')
             ->willReturnCallback(
                 static fn (): string => match ($matcher->numberOfInvocations()) {
-                        1 => '',
-                        default => $expected,
+                    1 => '',
+                    default => $expected,
                 },
             );
         $matcher = self::exactly(5);
