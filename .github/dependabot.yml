@@ -106,6 +106,9 @@ updates:
       include: "scope"
       prefix: "composer (4.x)"
 
+    ignore:
+      - dependency-name: "laminas/laminas-servicemanager"
+
     rebase-strategy: "auto"
 
   - package-ecosystem: "github-actions"
