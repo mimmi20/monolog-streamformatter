@@ -434,7 +434,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame($message, $messages, (string) $invocation),
                     };
@@ -558,7 +562,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame($message, $messages, (string) $invocation),
                     };
@@ -628,7 +636,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -644,7 +652,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -654,7 +662,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 9) {
+                    if ($invocation === 8) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -717,9 +725,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame('test message true test-app', $messages, (string) $invocation),
+                        default => self::assertSame(
+                            'test message true test-app',
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -787,7 +803,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -803,7 +819,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -813,7 +829,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 9) {
+                    if ($invocation === 8) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -880,9 +896,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame('test message ["abc","xyz"] test-app', $messages, (string) $invocation),
+                        default => self::assertSame(
+                            'test message ["abc","xyz"] test-app',
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -950,7 +974,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -966,7 +990,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -976,7 +1000,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 9) {
+                    if ($invocation === 8) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1044,9 +1068,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame('test message test test test-app', $messages, (string) $invocation),
+                        default => self::assertSame(
+                            'test message test test test-app',
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -1114,7 +1146,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -1130,7 +1162,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1140,7 +1172,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 9) {
+                    if ($invocation === 8) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1211,9 +1243,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame("test message test\ntest test-app", $messages, (string) $invocation),
+                        default => self::assertSame(
+                            "test message test\ntest test-app",
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -1281,7 +1321,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -1297,7 +1337,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1307,7 +1347,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 9) {
+                    if ($invocation === 8) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1379,7 +1419,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame(
                             "test message test\ntest <[object] (RuntimeException(code: " . $exception->getCode() . '): error at ' . $exception->getFile() . ':' . $exception->getLine() . ')>',
@@ -1457,7 +1501,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -1473,7 +1517,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1631,9 +1675,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame("test message test\ntest test-app", $messages, (string) $invocation),
+                        default => self::assertSame(
+                            "test message test\ntest test-app",
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -1705,7 +1757,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -1721,7 +1773,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -1872,9 +1924,17 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
-                        default => self::assertSame("test message test\ntest test-app", $messages, (string) $invocation),
+                        default => self::assertSame(
+                            "test message test\ntest test-app",
+                            $messages,
+                            (string) $invocation,
+                        ),
                     };
                 },
             );
@@ -1950,7 +2010,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -1966,7 +2026,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -2047,7 +2107,11 @@ final class StreamFormatterTest extends TestCase
                         assert($tableCell1 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell1, (string) $invocation);
-                        self::assertSame('previous Throwable', (string) $tableCell1, (string) $invocation);
+                        self::assertSame(
+                            'previous Throwable',
+                            (string) $tableCell1,
+                            (string) $invocation,
+                        );
 
                         $tableCell2 = $row[1];
                         assert($tableCell2 instanceof TableCell);
@@ -2113,7 +2177,11 @@ final class StreamFormatterTest extends TestCase
                         assert($tableCell1 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell1, (string) $invocation);
-                        self::assertSame('previous Throwable', (string) $tableCell1, (string) $invocation);
+                        self::assertSame(
+                            'previous Throwable',
+                            (string) $tableCell1,
+                            (string) $invocation,
+                        );
 
                         $tableCell2 = $row[1];
                         assert($tableCell2 instanceof TableCell);
@@ -2249,7 +2317,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame(
                             "test message context.one test\ntest test-app extra.Exception",
@@ -2331,7 +2403,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -2347,7 +2419,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -2428,7 +2500,11 @@ final class StreamFormatterTest extends TestCase
                         assert($tableCell1 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell1, (string) $invocation);
-                        self::assertSame('previous Throwable', (string) $tableCell1, (string) $invocation);
+                        self::assertSame(
+                            'previous Throwable',
+                            (string) $tableCell1,
+                            (string) $invocation,
+                        );
 
                         $tableCell2 = $row[1];
                         assert($tableCell2 instanceof TableCell);
@@ -2494,7 +2570,11 @@ final class StreamFormatterTest extends TestCase
                         assert($tableCell1 instanceof TableCell);
 
                         self::assertInstanceOf(TableCell::class, $tableCell1, (string) $invocation);
-                        self::assertSame('previous Throwable', (string) $tableCell1, (string) $invocation);
+                        self::assertSame(
+                            'previous Throwable',
+                            (string) $tableCell1,
+                            (string) $invocation,
+                        );
 
                         $tableCell2 = $row[1];
                         assert($tableCell2 instanceof TableCell);
@@ -2626,7 +2706,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame(
                             "test message NULL test\ntest  test-app test-app",
@@ -2699,7 +2783,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -2715,7 +2799,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -2800,7 +2884,11 @@ final class StreamFormatterTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame($formattedMessage, $messages, (string) $invocation),
                     };
@@ -2870,7 +2958,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -2886,7 +2974,7 @@ final class StreamFormatterTest extends TestCase
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -3146,7 +3234,11 @@ this is a formatted message
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        1 => self::assertSame(str_repeat('=', StreamFormatter::FULL_WIDTH), $messages, (string) $invocation),
+                        1 => self::assertSame(
+                            str_repeat('=', StreamFormatter::FULL_WIDTH),
+                            $messages,
+                            (string) $invocation,
+                        ),
                         2, 4, 5 => self::assertSame('', $messages, (string) $invocation),
                         default => self::assertSame($formattedMessage, $messages, (string) $invocation),
                     };
@@ -3216,7 +3308,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if ($invocation === 3) {
+                    if ($invocation === 2) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -3232,7 +3324,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -3242,7 +3334,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if ($invocation === 7) {
+                    if ($invocation === 6) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -3665,16 +3757,10 @@ this is a formatted message
         $table->expects($matcher)
             ->method('addRow')
             ->willReturnCallback(
-                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level1, $level2, $level3): Table {
+                static function (TableSeparator | array $row) use ($matcher, $table, $datetime, $level1, $level2): Table {
                     $invocation = $matcher->numberOfInvocations();
 
-                    if (
-                        in_array(
-                            $invocation,
-                            [5, 7, 9, 11, 19, 21, 23, 25],
-                            true,
-                        )
-                    ) {
+                    if (in_array($invocation, [5, 7, 9, 11, 19, 21, 23, 25], true)) {
                         self::assertInstanceOf(
                             TableSeparator::class,
                             $row,
@@ -3696,11 +3782,7 @@ this is a formatted message
                         default => self::assertCount(2, $row, (string) $invocation),
                     };
 
-                    if (
-                        $invocation === 1
-                        || $invocation === 3
-                        || $invocation === 19
-                    ) {
+                    if ($invocation === 1 || $invocation === 3 || $invocation === 17) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -3732,7 +3814,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if ($invocation === 2) {
+                    if ($invocation === 2 || $invocation === 18) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -3764,7 +3846,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if ($invocation === 5) {
+                    if ($invocation === 4) {
                         $tableCell1 = $row[0];
                         assert($tableCell1 instanceof TableCell);
 
@@ -3796,10 +3878,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if (
-                        $invocation === 7
-                        || $invocation === 20
-                    ) {
+                    if ($invocation === 6) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -3817,9 +3896,7 @@ this is a formatted message
                         return $table;
                     }
 
-                    if (
-                        $invocation === 11
-                    ) {
+                    if ($invocation === 10) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
@@ -3835,9 +3912,7 @@ this is a formatted message
                         );
                     }
 
-                    if (
-                        $invocation === 26
-                    ) {
+                    if ($invocation === 26) {
                         $tableCell = $row[0];
                         assert($tableCell instanceof TableCell);
 
