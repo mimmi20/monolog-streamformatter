@@ -158,7 +158,9 @@ final class StreamFormatter extends NormalizerFormatter
         $this->output->writeln(trim($message));
         $this->output->writeln('');
 
-        $this->table->addRow([new TableCell('General Info', ['colspan' => self::SPAN_ALL_COLUMS])]);
+        $this->table->setHeaders([
+            [new TableCell('General Info', ['colspan' => self::SPAN_ALL_COLUMS])],
+        ]);
 
         $this->table->addRow(
             [
