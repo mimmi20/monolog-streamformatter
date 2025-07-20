@@ -37,6 +37,10 @@ updates:
       include: "scope"
       prefix: "composer (master)"
 
+    ignore:
+      - dependency-name: "symfony/console"
+        versions: ">= 7.3.1"
+
     rebase-strategy: "auto"
 
   - package-ecosystem: "github-actions"
