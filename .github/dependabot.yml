@@ -41,7 +41,7 @@ updates:
       - dependency-name: "symfony/console"
         versions: ">= 7.3.1"
 
-    rebase-strategy: "auto"
+    rebase-strategy: "disabled"
 
   - package-ecosystem: "github-actions"
 
@@ -76,7 +76,7 @@ updates:
       - dependency-name: "mimmi20/ci"
       - dependency-name: "release-drafter/release-drafter"
 
-    rebase-strategy: "auto"
+    rebase-strategy: "disabled"
 
   - package-ecosystem: "composer"
 
@@ -115,7 +115,7 @@ updates:
       - dependency-name: "symfony/console"
         versions: ">= 7.3.1"
 
-    rebase-strategy: "auto"
+    rebase-strategy: "disabled"
 
   - package-ecosystem: "github-actions"
 
@@ -150,4 +150,4 @@ updates:
       - dependency-name: "mimmi20/ci"
       - dependency-name: "release-drafter/release-drafter"
 
-    rebase-strategy: "auto"
+    rebase-strategy: "disabled"
