@@ -33,7 +33,7 @@ use function is_scalar;
 use function is_string;
 use function str_repeat;
 use function str_replace;
-use function mb_trim;
+use function trim;
 
 final class StreamFormatter extends NormalizerFormatter
 {
@@ -155,7 +155,7 @@ final class StreamFormatter extends NormalizerFormatter
 
         $this->output->writeln(str_repeat('=', self::FULL_WIDTH));
         $this->output->writeln('');
-        $this->output->writeln(mb_trim($message));
+        $this->output->writeln(trim($message));
         $this->output->writeln('');
 
         $this->table->setHeaders([
@@ -302,7 +302,7 @@ final class StreamFormatter extends NormalizerFormatter
     /** @throws RuntimeException if encoding fails and errors are not ignored */
     private function addFact(string $name, mixed $value): void
     {
-        $name = mb_trim(str_replace('_', ' ', $name));
+        $name = trim(str_replace('_', ' ', $name));
 
         if (is_array($value)) {
             $rowspan = count($value);
