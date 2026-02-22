@@ -17,6 +17,7 @@
   },
   "require": {
     "php": "~8.3.0 || ~8.4.0 || 8.5.0",
+    "ext-mbstring": "*",
     "laminas/laminas-servicemanager": "^3.22.1",
     "monolog/monolog": "^3.9.0",
     "psr/container": "^1.1.2 || ^2.0.2",
