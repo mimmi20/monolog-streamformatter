@@ -3054,8 +3054,8 @@ this is a formatted message
 | General Info                                                         |
 +------------+---------------+-----------------------------------------+
 |       Time | ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '                               |
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                               |
 |      Level | ERROR                                                   |
 +------------+---------------+-----------------------------------------+
 | Extra                                                                |
@@ -3138,8 +3138,8 @@ this is a formatted message
 | General Info                                                           |
 +------------+---------------+-------------------------------------------+
 |       Time | ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '                                 |
+            NormalizerFormatter::SIMPLE_DATE,
+        ) . '                                 |
 |      Level | ERROR                                                     |
 +------------+---------------+-------------------------------------------+
 | Extra                                                                  |
@@ -3958,9 +3958,7 @@ test message
 ┌─────────────────┬───────────────┬──────────────┐
 │ General Info                                   │
 ├─────────────────┼───────────────┼──────────────┤
-│            Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│            Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │           Level │ ERROR                        │
 └─────────────────┴───────────────┴──────────────┘
 
@@ -3972,9 +3970,7 @@ test message
 ┌────────────┬───────────────┬──────────────┐
 │ General Info                              │
 ├────────────┼───────────────┼──────────────┤
-│       Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│       Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │      Level │ ERROR                        │
 ├────────────┼───────────────┼──────────────┤
 │ Extra                                     │
@@ -3998,9 +3994,7 @@ test message
 ┌────────────┬───────────────┬──────────────┐
 │ General Info                              │
 ├────────────┼───────────────┼──────────────┤
-│       Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│       Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │      Level │ ERROR                        │
 ├────────────┼───────────────┼──────────────┤
 │ Extra                                     │
@@ -4082,9 +4076,7 @@ test message
 ┌─────────────────┬───────────────┬──────────────┐
 │ General Info                                   │
 ├─────────────────┼───────────────┼──────────────┤
-│            Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│            Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │           Level │ ERROR                        │
 └─────────────────┴───────────────┴──────────────┘
 
@@ -4096,9 +4088,7 @@ test message
 ┌────────────┬───────────────┬──────────────┐
 │ General Info                              │
 ├────────────┼───────────────┼──────────────┤
-│       Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│       Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │      Level │ ERROR                        │
 ├────────────┼───────────────┼──────────────┤
 │ Context                                   │
@@ -4118,9 +4108,7 @@ test message
 ┌──────────┬───────────────┬──────────────┐
 │ General Info                            │
 ├──────────┼───────────────┼──────────────┤
-│     Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│     Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │    Level │ ERROR                        │
 ├──────────┼───────────────┼──────────────┤
 │ Extra                                   │
@@ -4193,9 +4181,7 @@ test message
 ┌─────────────────┬───────────────┬──────────────┐
 │ General Info                                   │
 ├─────────────────┼───────────────┼──────────────┤
-│            Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│            Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │           Level │ ERROR                        │
 └─────────────────┴───────────────┴──────────────┘
 
@@ -4207,9 +4193,7 @@ test message
 ┌────────────┬───────────────┬──────────────┐
 │ General Info                              │
 ├────────────┼───────────────┼──────────────┤
-│       Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│       Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │      Level │ ERROR                        │
 ├────────────┼───────────────┼──────────────┤
 │ Context                                   │
@@ -4229,9 +4213,7 @@ test message
 ┌──────────┬───────────────┬──────────────┐
 │ General Info                            │
 ├──────────┼───────────────┼──────────────┤
-│     Time │ ' . $datetime->format(
-                NormalizerFormatter::SIMPLE_DATE,
-            ) . '    │
+│     Time │ ' . $datetime->format(NormalizerFormatter::SIMPLE_DATE) . '    │
 │    Level │ ERROR                        │
 ├──────────┼───────────────┼──────────────┤
 │ Extra                                   │
