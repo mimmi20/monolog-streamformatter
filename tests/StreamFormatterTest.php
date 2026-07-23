@@ -1191,7 +1191,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.five% %extra.app%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: false,
         );
 
@@ -1366,7 +1365,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.five% %extra.app%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -1622,7 +1620,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.five% <%extra.Exception%>',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -1868,7 +1865,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.five% %extra.app%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -2261,7 +2257,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.five% %extra.app%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -2654,7 +2649,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% context.one %context.five% %extra.app% extra.Exception',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -2828,7 +2822,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -3003,7 +2996,6 @@ final class StreamFormatterTest extends TestCase
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -3084,7 +3076,6 @@ this is a formatted message
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -3164,7 +3155,6 @@ this is a formatted message
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -3449,7 +3439,6 @@ this is a formatted message
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -3529,7 +3518,6 @@ this is a formatted message
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: false,
         );
 
@@ -3621,7 +3609,6 @@ this is a formatted message
             table: $table,
             format: '%message% %context.one% %context.five% %context% %extra.app% %extra.app% %extra%',
             tableStyle: $tableStyle,
-            dateFormat: null,
             allowInlineLineBreaks: true,
         );
 
@@ -4041,12 +4028,7 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter(
-            output: $output,
-            table: $table,
-            format: null,
-            tableStyle: $tableStyle,
-        );
+        $formatter = new StreamFormatter(output: $output, table: $table, tableStyle: $tableStyle);
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
@@ -4146,12 +4128,7 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter(
-            output: $output,
-            table: $table,
-            format: null,
-            tableStyle: $tableStyle,
-        );
+        $formatter = new StreamFormatter(output: $output, table: $table, tableStyle: $tableStyle);
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
@@ -4251,12 +4228,7 @@ test message
         $output = new BufferedOutput();
         $table  = new Table($output);
 
-        $formatter = new StreamFormatter(
-            output: $output,
-            table: $table,
-            format: null,
-            tableStyle: $tableStyle,
-        );
+        $formatter = new StreamFormatter(output: $output, table: $table, tableStyle: $tableStyle);
 
         $formatted = $formatter->formatBatch([$record1, $record2, $record3]);
 
